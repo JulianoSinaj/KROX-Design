@@ -17,8 +17,8 @@ export default function SectionTitle({ index, label, title, className = '', alig
           align === 'center' ? 'justify-center' : ''
         }`}
       >
-        <span className="text-accent">{index}</span>
-        <span className="h-px w-10 bg-white/20" />
+        <span className="text-gold">{index}</span>
+        <span className="h-px w-10 bg-accent/30" />
         {label}
       </motion.p>
 
@@ -30,10 +30,10 @@ export default function SectionTitle({ index, label, title, className = '', alig
           <span key={i} className="mr-[0.25em] inline-block overflow-hidden pb-[0.08em] align-bottom">
             <motion.span
               className="inline-block origin-bottom will-change-transform"
-              initial={{ y: '110%', rotateX: -50 }}
-              whileInView={{ y: '0%', rotateX: 0 }}
+              initial={{ y: '105%', rotateX: -20, opacity: 0 }}
+              whileInView={{ y: '0%', rotateX: 0, opacity: 1 }}
               viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.9, ease, delay: i * 0.06 }}
+              transition={{ duration: 1.2, ease, delay: i * 0.05 }}
             >
               {word}
             </motion.span>

@@ -10,12 +10,64 @@
   body {
     @apply bg-ink font-sans text-bone antialiased;
     text-rendering: optimizeLegibility;
+    font-feature-settings: 'cv11', 'ss01', 'ss03'; /* Inter: shifra dhe shkronja më të pastra */
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display tracking-tight;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
   }
   ::selection {
     @apply bg-accent text-ink;
   }
   :focus-visible {
-    @apply outline-none ring-2 ring-gold ring-offset-2 ring-offset-ink;
+    @apply outline-none ring-1 ring-gold ring-offset-4 ring-offset-ink;
+  }
+}
+
+@layer components {
+  /* Hapësira — më shumë "frymë" si në studio arkitekturore */
+  .container-site {
+    @apply mx-auto w-full max-w-site px-5 sm:px-8 lg:px-16;
+  }
+  .section-pad {
+    @apply py-28 md:py-40 lg:py-52;
+  }
+
+  /* Kartë standarde: gri pak më e çelur se sfondi + kornizë champagne e hollë */
+  .card {
+    @apply border border-accent/15 bg-graphite transition-[border-color,background-color,box-shadow] duration-700 ease-silk;
+  }
+  .card-hover {
+    @apply hover:border-accent/40 hover:shadow-card;
+  }
+
+  /* Etiketë e vogël mbi tituj */
+  .eyebrow {
+    @apply text-[11px] font-medium uppercase tracking-eyebrow text-accent;
+  }
+
+  /* Vijë ndarëse champagne që zbehet në skaje */
+  .hairline {
+    @apply h-px w-full;
+    background: linear-gradient(90deg, transparent, rgba(197, 179, 158, 0.3) 20%, rgba(197, 179, 158, 0.3) 80%, transparent);
+  }
+
+  /* Rrjetë "blueprint" në champagne shumë të zbehtë */
+  .bg-blueprint {
+    background-image:
+      linear-gradient(rgba(197, 179, 158, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(197, 179, 158, 0.05) 1px, transparent 1px);
+    background-size: 96px 96px;
+  }
+
+  .field {
+    @apply h-14 w-full rounded-none border-0 border-b border-accent/20 bg-transparent px-0 text-base font-normal text-bone transition-colors duration-500 placeholder:text-mist/50 focus:border-gold focus:outline-none focus:ring-0;
   }
 }
 
@@ -26,25 +78,6 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-  }
-}
-
-@layer components {
-  .container-site {
-    @apply mx-auto w-full max-w-site px-4 sm:px-6 lg:px-10;
-  }
-  .section-pad {
-    @apply py-24 md:py-32 lg:py-40;
-  }
-  /* Rrjetë "blueprint" për sfondet */
-  .bg-blueprint {
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
-    background-size: 80px 80px;
-  }
-  .field {
-    @apply h-14 w-full rounded-none border-0 border-b border-white/15 bg-transparent px-0 text-base text-bone transition-colors duration-300 placeholder:text-mist/50 focus:border-accent focus:outline-none focus:ring-0;
   }
 }
 

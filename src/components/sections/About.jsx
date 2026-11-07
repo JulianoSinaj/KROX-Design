@@ -72,7 +72,7 @@ export default function About() {
             </motion.div>
 
             {/* Statistikat */}
-            <div className="mt-14 grid grid-cols-2 border-l border-t border-white/10 sm:grid-cols-4">
+            <div className="mt-14 grid grid-cols-2 border-l border-t border-accent/15 sm:grid-cols-4">
               {stats.map((s, i) => (
                 <motion.div
                   key={s.label}
@@ -80,7 +80,7 @@ export default function About() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: '-60px' }}
                   transition={{ duration: 0.7, ease, delay: i * 0.08 }}
-                  className="border-b border-r border-white/10 p-5 sm:p-6"
+                  className="border-b border-r border-accent/15 p-5 sm:p-6"
                 >
                   <p className="font-display text-3xl font-medium text-bone md:text-4xl">
                     <Counter value={s.value} suffix={s.suffix} />
@@ -93,7 +93,7 @@ export default function About() {
         </div>
 
         {/* Vlerat */}
-        <div className="mt-28 grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-32 grid gap-px overflow-hidden border border-accent/15 bg-accent/15 sm:grid-cols-2 lg:grid-cols-4">
           {values.map((v, i) => {
             const Icon = icons[v.icon]
             return (
@@ -103,7 +103,7 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.8, ease, delay: i * 0.08 }}
-                className="group relative bg-ink p-8 transition-colors duration-500 hover:bg-graphite"
+                className="group relative bg-graphite p-10 transition-colors duration-700 ease-silk hover:bg-steel"
               >
                 <span className="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-accent transition-transform duration-700 ease-expo group-hover:scale-x-100" />
                 <Icon className="text-accent" size={28} strokeWidth={1.5} />

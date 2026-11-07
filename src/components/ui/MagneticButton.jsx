@@ -1,12 +1,27 @@
 import { useRef } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 
-const spring = { stiffness: 220, damping: 18, mass: 0.4 }
+// Spring më i butë = lëvizje më e qetë, pa dridhje
+const spring = { stiffness: 150, damping: 20, mass: 0.5 }
 
 const variants = {
-  primary: { base: 'bg-gold text-ink', fill: 'bg-accent-light', hoverText: 'text-ink' },
-  outline: { base: 'border border-white/20 text-bone', fill: 'bg-accent', hoverText: 'text-ink' },
-  dark: { base: 'bg-ink text-bone', fill: 'bg-accent', hoverText: 'text-ink' },
+  // CTA kryesore: gold i plotë → në hover errësohet dhe mbetet vetëm korniza + teksti gold
+  primary: {
+    base: 'border border-gold bg-gold text-ink hover:shadow-gold',
+    fill: 'bg-ink',
+    hoverText: 'text-gold',
+  },
+  // Dytësor: kornizë champagne e hollë → në hover korniza bëhet gold me shkëlqim të lehtë
+  outline: {
+    base: 'border border-accent/35 text-bone hover:border-gold hover:shadow-gold',
+    fill: 'bg-gold/[0.08]',
+    hoverText: 'text-gold',
+  },
+  dark: {
+    base: 'border border-accent/15 bg-graphite text-bone hover:border-gold',
+    fill: 'bg-gold/[0.08]',
+    hoverText: 'text-gold',
+  },
 }
 
 /**
@@ -19,7 +34,7 @@ export default function MagneticButton({
   onClick,
   type = 'button',
   variant = 'primary',
-  strength = 0.3,
+  strength = 0.25,
   className = '',
   ...rest
 }) {
@@ -52,17 +67,17 @@ export default function MagneticButton({
       onMouseLeave={reset}
       style={{ x: sx, y: sy }}
       whileTap={{ scale: 0.96 }}
-      className={`group relative inline-flex h-14 select-none items-center justify-center overflow-hidden rounded-full px-8 text-[13px] font-medium uppercase tracking-[0.16em] will-change-transform ${v.base} ${className}`}
+      className={`group relative inline-flex h-14 select-none items-center justify-center overflow-hidden rounded-full px-9 text-[12px] font-medium uppercase tracking-[0.2em] transition-[border-color,box-shadow] duration-700 ease-silk will-change-transform ${v.base} ${className}`}
       {...rest}
     >
       {/* Mbushja e maskuar */}
       <span
         aria-hidden
-        className={`absolute inset-0 translate-y-full rounded-full ${v.fill} transition-transform duration-500 ease-expo group-hover:translate-y-0`}
+        className={`absolute inset-0 translate-y-full rounded-full ${v.fill} transition-transform duration-700 ease-expo group-hover:translate-y-0`}
       />
       {/* Teksti që rrotullohet */}
       <span className="relative block h-6 overflow-hidden">
-        <span className="flex flex-col transition-transform duration-500 ease-expo group-hover:-translate-y-1/2">
+        <span className="flex flex-col transition-transform duration-700 ease-expo group-hover:-translate-y-1/2">
           <span className="flex h-6 items-center gap-3">{children}</span>
           <span aria-hidden className={`flex h-6 items-center gap-3 ${v.hoverText}`}>
             {children}

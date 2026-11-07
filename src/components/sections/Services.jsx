@@ -10,7 +10,7 @@ const ease = [0.22, 1, 0.36, 1]
 
 export default function Services() {
   return (
-    <section id="sherbimet" className="section-pad relative overflow-hidden bg-graphite/40">
+    <section id="sherbimet" className="section-pad relative overflow-hidden border-y border-accent/10">
       <div className="bg-blueprint pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" />
 
       <div className="container-site relative">
@@ -28,7 +28,7 @@ export default function Services() {
           </motion.p>
         </div>
 
-        <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-20 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {services.map((s, i) => {
             const Icon = icons[s.icon]
             return (
@@ -42,11 +42,11 @@ export default function Services() {
               >
                 <TiltCard className="h-full">
                   <article
-                    className="flex h-full flex-col border border-white/10 bg-ink p-8 transition-colors duration-500 group-hover:border-accent/40"
+                    className="flex h-full flex-col border border-accent/15 bg-graphite p-9 transition-colors duration-700 ease-silk group-hover:border-gold/50"
                     style={{ transformStyle: 'preserve-3d' }}
                   >
                     <div className="flex items-start justify-between" style={{ transform: 'translateZ(40px)' }}>
-                      <span className="flex h-14 w-14 items-center justify-center border border-white/10 bg-graphite text-accent transition-colors duration-500 group-hover:bg-accent group-hover:text-ink">
+                      <span className="flex h-14 w-14 items-center justify-center border border-accent/20 bg-steel text-accent transition-colors duration-700 ease-silk group-hover:border-gold group-hover:text-gold">
                         <Icon size={26} strokeWidth={1.5} />
                       </span>
                       <span className="font-display text-sm text-mist">0{i + 1}</span>
@@ -57,7 +57,7 @@ export default function Services() {
                       <p className="mt-4 text-sm leading-relaxed text-mist">{s.text}</p>
                     </div>
 
-                    <ul className="mt-6 space-y-2 border-t border-white/10 pt-6" style={{ transform: 'translateZ(20px)' }}>
+                    <ul className="mt-6 space-y-2 border-t border-accent/15 pt-6" style={{ transform: 'translateZ(20px)' }}>
                       {s.points.map((pt) => (
                         <li key={pt} className="flex items-center gap-3 text-sm text-bone/80">
                           <span className="h-1 w-1 bg-accent" />

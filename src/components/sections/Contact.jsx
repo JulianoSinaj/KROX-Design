@@ -47,18 +47,18 @@ export default function Contact() {
   ]
 
   return (
-    <section id="kontakt" className="section-pad relative bg-graphite/40">
+    <section id="kontakt" className="section-pad relative border-t border-accent/10">
       <div className="container-site">
         <SectionTitle index="04" label="Kontakt" title="Le të ndërtojmë diçka së bashku." className="max-w-3xl" />
 
-        <div className="mt-16 grid gap-16 lg:grid-cols-12">
+        <div className="mt-20 grid gap-16 lg:grid-cols-12 lg:gap-24">
           {/* Informacioni + harta */}
           <div className="lg:col-span-5">
-            <ul className="divide-y divide-white/10 border-y border-white/10">
+            <ul className="divide-y divide-accent/15 border-y border-accent/15">
               {contactItems.map(({ icon: Icon, label, value, href }, i) => {
                 const content = (
                   <>
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-white/10 text-accent transition-colors duration-500 group-hover:bg-accent group-hover:text-ink">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-accent/15 text-accent transition-colors duration-500 group-hover:bg-accent group-hover:text-ink">
                       <Icon size={18} strokeWidth={1.5} />
                     </span>
                     <span>
@@ -90,7 +90,7 @@ export default function Contact() {
               whileInView={{ clipPath: 'inset(0 0 0% 0)' }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 1.1, ease }}
-              className="mt-8 aspect-[4/3] overflow-hidden border border-white/10 bg-ink"
+              className="mt-8 aspect-[4/3] overflow-hidden border border-accent/15 bg-ink"
             >
               <iframe
                 title="Harta e zyrës KROX Design"
@@ -110,7 +110,7 @@ export default function Contact() {
             transition={{ duration: 0.9, ease, delay: 0.1 }}
             className="relative lg:col-span-7"
           >
-            <div className="relative border border-white/10 bg-ink p-6 sm:p-10">
+            <div className="relative border border-accent/15 bg-graphite p-6 sm:p-12">
               <AnimatePresence mode="wait" initial={false}>
                 {status === 'sent' ? (
                   <motion.div
@@ -151,7 +151,7 @@ export default function Contact() {
                       <input className="field" type="tel" value={values.phone} onChange={update('phone')} placeholder="+355 6X XXX XXXX" autoComplete="tel" />
                     </Field>
                     <Field label="Shërbimi">
-                      <select className="field cursor-pointer appearance-none bg-ink" value={values.service} onChange={update('service')}>
+                      <select className="field cursor-pointer appearance-none bg-graphite" value={values.service} onChange={update('service')}>
                         <option value="">Zgjidhni shërbimin</option>
                         {services.map((s) => (
                           <option key={s.id} value={s.id}>{s.title}</option>

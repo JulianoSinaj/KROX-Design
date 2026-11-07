@@ -12,7 +12,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="relative overflow-hidden border-t border-white/10 bg-ink">
+    <footer className="relative overflow-hidden border-t border-accent/15 bg-ink">
       <div className="container-site pb-10 pt-20">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
@@ -69,7 +69,7 @@ export default function Footer() {
           KROX DESIGN
         </p>
 
-        <div className="mt-10 flex flex-col items-start justify-between gap-6 border-t border-white/10 pt-8 text-xs text-mist sm:flex-row sm:items-center">
+        <div className="mt-10 flex flex-col items-start justify-between gap-6 border-t border-accent/15 pt-8 text-xs text-mist sm:flex-row sm:items-center">
           <p>© {new Date().getFullYear()} {company.name}. Të gjitha të drejtat e rezervuara.</p>
           <MagneticButton variant="outline" onClick={() => scrollToTarget(0)} className="!h-11 !px-5">
             Kthehu lart <ArrowUp size={14} />
