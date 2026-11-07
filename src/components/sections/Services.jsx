@@ -1,0 +1,93 @@
+import { motion } from 'framer-motion'
+import { ArrowUpRight, Building2, Calculator, DraftingCompass, HardHat } from 'lucide-react'
+import SectionTitle from '../ui/SectionTitle'
+import TiltCard from '../ui/TiltCard'
+import { services } from '../../data/services'
+import { scrollToTarget } from '../../hooks/useLenis'
+
+const icons = { Building2, Calculator, DraftingCompass, HardHat }
+const ease = [0.22, 1, 0.36, 1]
+
+export default function Services() {
+  return (
+    <section id="sherbimet" className="section-pad relative overflow-hidden bg-graphite/40">
+      <div className="bg-blueprint pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" />
+
+      <div className="container-site relative">
+        <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+          <SectionTitle index="02" label="Shërbimet" title="Gjithçka që i duhet projektit tuaj." className="max-w-2xl" />
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease, delay: 0.2 }}
+            className="max-w-sm text-mist"
+          >
+            Nga studimi i parë i fizibilitetit deri në dorëzimin e objektit, ju ofrojmë një partner të
+            vetëm dhe përgjegjës.
+          </motion.p>
+        </div>
+
+        <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {services.map((s, i) => {
+            const Icon = icons[s.icon]
+            return (
+              <motion.div
+                key={s.id}
+                initial={{ opacity: 0, y: 50, rotateX: -12 }}
+                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ duration: 0.9, ease, delay: i * 0.1 }}
+                style={{ transformPerspective: 1000 }}
+              >
+                <TiltCard className="h-full">
+                  <article
+                    className="flex h-full flex-col border border-white/10 bg-ink p-8 transition-colors duration-500 group-hover:border-accent/40"
+                    style={{ transformStyle: 'preserve-3d' }}
+                  >
+                    <div className="flex items-start justify-between" style={{ transform: 'translateZ(40px)' }}>
+                      <span className="flex h-14 w-14 items-center justify-center border border-white/10 bg-graphite text-accent transition-colors duration-500 group-hover:bg-accent group-hover:text-ink">
+                        <Icon size={26} strokeWidth={1.5} />
+                      </span>
+                      <span className="font-display text-sm text-mist">0{i + 1}</span>
+                    </div>
+
+                    <div style={{ transform: 'translateZ(30px)' }}>
+                      <h3 className="mt-10 font-display text-2xl font-medium leading-tight text-bone">{s.title}</h3>
+                      <p className="mt-4 text-sm leading-relaxed text-mist">{s.text}</p>
+                    </div>
+
+                    <ul className="mt-6 space-y-2 border-t border-white/10 pt-6" style={{ transform: 'translateZ(20px)' }}>
+                      {s.points.map((pt) => (
+                        <li key={pt} className="flex items-center gap-3 text-sm text-bone/80">
+                          <span className="h-1 w-1 bg-accent" />
+                          {pt}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <a
+                      href="#kontakt"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        scrollToTarget('#kontakt')
+                      }}
+                      className="mt-auto flex items-center gap-2 pt-8 text-xs font-medium uppercase tracking-[0.2em] text-bone"
+                      style={{ transform: 'translateZ(20px)' }}
+                    >
+                      Kërko ofertë
+                      <ArrowUpRight
+                        size={16}
+                        className="text-accent transition-transform duration-500 ease-expo group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                      />
+                    </a>
+                  </article>
+                </TiltCard>
+              </motion.div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
