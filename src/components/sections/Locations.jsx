@@ -51,7 +51,7 @@ export default function Locations() {
             transition={{ duration: 0.8, ease, delay: 0.2 }}
             className="max-w-sm text-mist"
           >
-            Na vizitoni në zyrë për një takim mbi projektin tuaj, ose na kontaktoni drejtpërdrejt.
+            Ju mirëpresim në zyrë për të diskutuar projektin tuaj. Për çdo pyetje, na shkruani në email.
           </motion.p>
         </div>
 
