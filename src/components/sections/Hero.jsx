@@ -1,10 +1,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
-import MagneticButton from '../ui/MagneticButton'
 import FadeImage from '../ui/FadeImage'
 import { placeholder } from '../../data/site'
-import { scrollToTarget } from '../../hooks/useLenis'
 
 const ease = [0.22, 1, 0.36, 1]
 
@@ -25,11 +22,6 @@ export default function Hero() {
   const contentY = useTransform(progress, [0, 1], [0, -110])
   const contentRotate = useTransform(progress, [0, 1], [0, 5])
   const contentOpacity = useTransform(progress, [0, 0.7], [1, 0])
-
-  const go = (e, href) => {
-    e.preventDefault()
-    scrollToTarget(href)
-  }
 
   return (
     <section ref={ref} id="top" className="relative h-[100svh] min-h-[720px] overflow-hidden bg-ink">
@@ -111,19 +103,6 @@ export default function Hero() {
                 maksimale në kantier, nga studimi i parë deri te kolaudimi.
               </motion.p>
 
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.1, ease, delay: 1.2 }}
-                className="mt-12 flex flex-wrap gap-4"
-              >
-                <MagneticButton href="#projektet" onClick={(e) => go(e, '#projektet')}>
-                  Shiko projektet <ArrowRight size={16} />
-                </MagneticButton>
-                <MagneticButton href="#kontakt" variant="outline" onClick={(e) => go(e, '#kontakt')}>
-                  Na kontaktoni
-                </MagneticButton>
-              </motion.div>
             </div>
           </div>
         </motion.div>
