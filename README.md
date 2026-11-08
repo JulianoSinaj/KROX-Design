@@ -260,7 +260,7 @@ E gjithë përmbajtja ndodhet te `src/data/`, kështu që teksti, projektet dhe 
         <b>Juliano Sinaj</b>
       </a>
       <br />
-      <sub>Front-End Developer · Dizajn & Zhvillim</sub>
+      <sub>Full-Stack Developer · Dizajn & Zhvillim & Mirembajtje</sub>
     </td>
   </tr>
 </table>
