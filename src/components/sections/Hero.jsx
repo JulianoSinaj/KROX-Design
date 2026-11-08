@@ -24,7 +24,11 @@ export default function Hero() {
   const contentOpacity = useTransform(progress, [0, 0.7], [1, 0])
 
   return (
-    <section ref={ref} id="top" className="relative h-[100svh] min-h-[720px] overflow-hidden bg-ink">
+    <section
+      ref={ref}
+      id="top"
+      className="relative h-[100svh] min-h-[600px] overflow-hidden bg-ink sm:min-h-[680px] lg:min-h-[720px]"
+    >
       {/* Foto e kantierit me parallax */}
       <motion.div className="absolute inset-0 will-change-transform" style={{ y: bgY, scale: bgScale }}>
         <FadeImage
@@ -59,20 +63,21 @@ export default function Hero() {
       <div className="relative h-full" style={{ perspective: 1200 }}>
         <motion.div
           style={{ y: contentY, rotateX: contentRotate, opacity: contentOpacity, transformOrigin: 'center top' }}
-          className="container-site flex h-full flex-col justify-center pt-20 will-change-transform"
+          className="container-site flex h-full flex-col justify-center pt-16 will-change-transform sm:pt-20"
         >
           <motion.p
             initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, ease, delay: 0.3 }}
-            className="eyebrow mb-10 flex items-center gap-4"
+            className="eyebrow mb-6 flex items-center gap-3 !tracking-[0.22em] sm:mb-10 sm:gap-4 sm:!tracking-eyebrow"
           >
-            <span className="h-px w-12 bg-gold" />
-            Projektim · Zbatim · Mbikëqyrje
+            <span className="h-px w-8 shrink-0 bg-gold sm:w-12" />
+            <span className="min-w-0">Projektim · Zbatim · Mbikëqyrje</span>
           </motion.p>
 
+          {/* Mobile → tablet → desktop. Nga lg e tutje mbetet madhësia origjinale fluide (clamp). */}
           <h1
-            className="max-w-5xl text-[clamp(2.75rem,7.5vw,7rem)] font-medium leading-[1] text-bone"
+            className="max-w-5xl break-words text-[2.5rem] font-medium leading-[1.04] text-bone min-[400px]:text-5xl sm:text-6xl md:text-7xl lg:text-[clamp(4.5rem,7.5vw,7rem)] lg:leading-[1]"
             style={{ perspective: 900 }}
           >
             {lines.map((line, i) => (
@@ -91,20 +96,15 @@ export default function Hero() {
             ))}
           </h1>
 
-          <div className="mt-10">
-            <div>
-              <motion.p
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.1, ease, delay: 1.05 }}
-                className="max-w-xl text-base leading-relaxed text-bone/70 md:text-lg"
-              >
-                KROX Design projekton, zbaton dhe mbikëqyr punime ndërtimi me cilësi, saktësi dhe siguri
-                maksimale në kantier, nga studimi i parë deri te kolaudimi.
-              </motion.p>
-
-            </div>
-          </div>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1, ease, delay: 1.05 }}
+            className="mt-6 max-w-xl text-[15px] leading-relaxed text-bone/70 sm:mt-10 sm:text-base md:text-lg"
+          >
+            KROX projekton, zbaton dhe mbikëqyr punime ndërtimi me cilësi, saktësi dhe siguri
+            maksimale në kantier, nga studimi i parë deri te kolaudimi.
+          </motion.p>
         </motion.div>
       </div>
     </section>

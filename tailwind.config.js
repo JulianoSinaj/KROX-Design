@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
+  // Efektet hover vlejnë vetëm për mi/trackpad, jo për prekjen. Në iOS hover-i mbetej "ngjitur" pas prekjes.
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     extend: {
       colors: {

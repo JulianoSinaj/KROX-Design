@@ -6,7 +6,6 @@ export default function Logo({ className = '' }) {
         <span className="absolute bottom-0 right-0 h-2 w-2 bg-ink" />
       </span>
       <span className="text-lg font-bold tracking-[0.12em] text-bone">KROX</span>
-      <span className="text-lg font-light tracking-[0.12em] text-mist">DESIGN</span>
     </span>
   )
 }

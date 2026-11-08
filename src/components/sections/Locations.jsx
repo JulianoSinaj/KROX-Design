@@ -43,7 +43,7 @@ export default function Locations() {
     <section id="zyrat" className="section-pad relative border-t border-accent/10">
       <div className="container-site">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-          <SectionTitle index="05" label="Zyrat" title="Ku të na gjeni." />
+          <SectionTitle index="04" label="Zyrat" title="Ku të na gjeni." />
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -55,7 +55,7 @@ export default function Locations() {
           </motion.p>
         </div>
 
-        <div className="mt-16 grid gap-8 lg:grid-cols-12 lg:gap-10">
+        <div className="mt-10 grid gap-8 md:mt-16 lg:grid-cols-12 lg:gap-10">
           {/* Lista e zyrave */}
           <div className="flex flex-col lg:col-span-5">
             <motion.ul
@@ -199,7 +199,7 @@ function OfficeCard({ office, index, active, status, onSelect }) {
         onClick={onSelect}
         aria-expanded={active}
         aria-controls={panelId}
-        className="group flex w-full items-start gap-5 p-7 text-left sm:gap-7 sm:p-8"
+        className="group flex w-full items-start gap-4 p-5 text-left sm:gap-7 sm:p-8"
       >
         <span
           className={`font-display text-4xl font-medium leading-none tabular-nums transition-colors duration-700 sm:text-5xl ${
@@ -244,7 +244,7 @@ function OfficeCard({ office, index, active, status, onSelect }) {
             transition={{ duration: 0.7, ease }}
             className="overflow-hidden"
           >
-            <div className="mx-7 space-y-4 border-t border-accent/15 py-7 text-sm sm:mx-8">
+            <div className="mx-5 space-y-4 border-t border-accent/15 py-6 text-sm sm:mx-8 sm:py-7">
               {status && (
                 <p className="flex items-center gap-3 text-bone/90">
                   <Clock size={15} className="shrink-0 text-accent" />

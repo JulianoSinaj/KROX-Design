@@ -45,6 +45,8 @@ export default function MagneticButton({
   const sy = useSpring(y, spring)
 
   const handleMove = (e) => {
+    // Vetëm me mi/trackpad. Në prekje, iOS dërgon një "mousemove" sintetik dhe butoni mbetej i zhvendosur.
+    if (e.pointerType !== 'mouse') return
     const r = ref.current.getBoundingClientRect()
     x.set((e.clientX - (r.left + r.width / 2)) * strength)
     y.set((e.clientY - (r.top + r.height / 2)) * strength)
@@ -63,11 +65,12 @@ export default function MagneticButton({
       href={href}
       type={href ? undefined : type}
       onClick={onClick}
-      onMouseMove={handleMove}
-      onMouseLeave={reset}
+      onPointerMove={handleMove}
+      onPointerLeave={reset}
+      onPointerCancel={reset}
       style={{ x: sx, y: sy }}
       whileTap={{ scale: 0.96 }}
-      className={`group relative inline-flex h-14 select-none items-center justify-center overflow-hidden rounded-full px-9 text-[12px] font-medium uppercase tracking-[0.2em] transition-[border-color,box-shadow] duration-700 ease-silk will-change-transform ${v.base} ${className}`}
+      className={`group relative inline-flex h-14 max-w-full select-none items-center justify-center overflow-hidden rounded-full px-6 text-[12px] font-medium uppercase tracking-[0.16em] sm:px-9 sm:tracking-[0.2em] transition-[border-color,box-shadow] duration-700 ease-silk will-change-transform ${v.base} ${className}`}
       {...rest}
     >
       {/* Mbushja e maskuar */}

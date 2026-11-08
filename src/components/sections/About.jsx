@@ -18,7 +18,7 @@ export default function About() {
   return (
     <section id="rreth-nesh" className="section-pad relative">
       <div className="container-site">
-        <div className="grid items-center gap-16 lg:grid-cols-12 lg:gap-20">
+        <div className="grid items-center gap-14 md:gap-16 lg:grid-cols-12 lg:gap-12 xl:gap-20">
           {/* Imazhi */}
           <div className="relative lg:col-span-5">
             <motion.div
@@ -31,7 +31,7 @@ export default function About() {
             >
               <motion.img
                 src={placeholder('about', 1000, 1300)}
-                alt="KROX Design në kantier"
+                alt="KROX në kantier"
                 loading="lazy"
                 style={{ y: imgY, scale: 1.2 }}
                 className="h-full w-full object-cover grayscale will-change-transform"
@@ -62,7 +62,7 @@ export default function About() {
               className="mt-10 grid gap-6 text-base leading-relaxed text-mist md:grid-cols-2"
             >
               <p>
-                <span className="text-bone">KROX Design</span> ({company.legalName}) është shoqëri e
+                <span className="text-bone">KROX</span> ({company.legalName}) është shoqëri e
                 themeluar në {company.founded} me qendër në {company.city}. Ne mbulojmë gjithë ciklin e
                 një vepre: studimet gjeologo-inxhinierike dhe urbanistike, projektimin arkitektonik dhe
                 strukturor, zbatimin e punimeve dhe rikonstruksionet.
@@ -75,7 +75,7 @@ export default function About() {
             </motion.div>
 
             {/* Statistikat */}
-            <div className="mt-14 grid grid-cols-3 border-l border-t border-accent/15">
+            <div className="mt-10 grid grid-cols-3 border-l border-t border-accent/15 md:mt-14">
               {stats.map((s, i) => (
                 <motion.div
                   key={s.label}
@@ -83,9 +83,9 @@ export default function About() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: '-60px' }}
                   transition={{ duration: 0.7, ease, delay: i * 0.08 }}
-                  className="border-b border-r border-accent/15 p-5 sm:p-6"
+                  className="min-w-0 border-b border-r border-accent/15 p-3 min-[400px]:p-4 sm:p-6"
                 >
-                  <p className="font-display text-3xl font-medium text-bone md:text-4xl">
+                  <p className="font-display text-2xl font-medium text-bone min-[400px]:text-3xl md:text-4xl">
                     <Counter value={s.value} suffix={s.suffix} />
                   </p>
                   <p className="mt-2 text-xs leading-snug text-mist">{s.label}</p>
@@ -96,7 +96,7 @@ export default function About() {
         </div>
 
         {/* Vlerat */}
-        <div className="mt-32 grid gap-px overflow-hidden border border-accent/15 bg-accent/15 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-20 grid gap-px overflow-hidden md:mt-32 border border-accent/15 bg-accent/15 sm:grid-cols-2 lg:grid-cols-4">
           {values.map((v, i) => {
             const Icon = icons[v.icon]
             return (
@@ -106,7 +106,7 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.8, ease, delay: i * 0.08 }}
-                className="group relative bg-graphite p-10 transition-colors duration-700 ease-silk hover:bg-steel"
+                className="group relative bg-graphite p-7 transition-colors sm:p-10 duration-700 ease-silk hover:bg-steel"
               >
                 <span className="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-accent transition-transform duration-700 ease-expo group-hover:scale-x-100" />
                 <Icon className="text-accent" size={28} strokeWidth={1.5} />

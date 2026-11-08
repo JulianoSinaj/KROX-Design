@@ -6,7 +6,7 @@ export const placeholder = (seed, w = 1400, h = 1000) =>
   `https://picsum.photos/seed/krox-${seed}/${w}/${h}`
 
 export const company = {
-  name: 'KROX Design',          // emri tregtar
+  name: 'KROX',          // emri tregtar
   legalName: 'KROX Shpk',       // emri ligjor
   nuis: 'M26404203C',
   founded: 2022,                // data e themelimit: 03/02/2022
@@ -30,8 +30,8 @@ export const navLinks = [
   { label: 'Rreth nesh', href: '#rreth-nesh' },
   { label: 'Shërbimet', href: '#sherbimet' },
   { label: 'Projektet', href: '#projektet' },
-  { label: 'Kontakt', href: '#kontakt' },
   { label: 'Zyrat', href: '#zyrat' },
+  { label: 'Kontakt', href: '#kontakt' },
 ]
 
 export const yearsActive = new Date().getFullYear() - company.founded

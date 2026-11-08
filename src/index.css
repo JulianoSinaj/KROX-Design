@@ -6,11 +6,27 @@
   html {
     @apply bg-ink;
     -webkit-tap-highlight-color: transparent;
+    /* iOS nuk i zmadhon vetë tekstet kur telefoni rrotullohet horizontalisht */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   body {
     @apply bg-ink font-sans text-bone antialiased;
     text-rendering: optimizeLegibility;
     font-feature-settings: 'cv11', 'ss01', 'ss03'; /* Inter: shifra dhe shkronja më të pastra */
+    /* Asnjë lëvizje anësore e faqes. Vetëm te body (jo edhe te html),
+       që body të mos bëhet kontejner scroll-i dhe Lenis të vazhdojë të punojë. */
+    overflow-x: hidden;
+  }
+  @supports (overflow: clip) {
+    body {
+      overflow-x: clip;
+    }
+  }
+  img,
+  video,
+  iframe {
+    max-width: 100%;
   }
   h1,
   h2,
@@ -35,8 +51,25 @@
   .container-site {
     @apply mx-auto w-full max-w-site px-5 sm:px-8 lg:px-16;
   }
+  /* Pret çdo element që del anash, pa krijuar kontejner scroll-i (clip, jo hidden) */
+  .clip-x {
+    overflow-x: hidden;
+  }
+  @supports (overflow: clip) {
+    .clip-x {
+      overflow-x: clip;
+    }
+  }
   .section-pad {
     @apply py-16 md:py-20 lg:py-24;
+  }
+
+  /* "KROX" në sfond të footer-it — shtrihet në gjithë gjerësinë e ekranit */
+  .footer-wordmark {
+    @apply whitespace-nowrap text-center font-display font-bold;
+    font-size: 38vw;
+    line-height: 0.74;
+    letter-spacing: -0.045em;
   }
 
   /* Kartë standarde: gri pak më e çelur se sfondi + kornizë champagne e hollë */

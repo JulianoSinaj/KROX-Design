@@ -18,8 +18,8 @@ export function mailtoHref(email, { subject, body } = {}) {
 
 /** Subjekti dhe teksti standard kur vizitori klikon mbi email-in e kompanisë. */
 export const defaultMail = {
-  subject: 'Kërkesë informacioni — KROX Design',
-  body: 'Përshëndetje KROX Design,\n\nDëshiroj të marr më shumë informacion mbi…\n\nFaleminderit,\n',
+  subject: 'Kërkesë informacioni — KROX',
+  body: 'Përshëndetje KROX,\n\nDëshiroj të marr më shumë informacion mbi…\n\nFaleminderit,\n',
 }
 
 // URL-të universale të Google Maps: në celular hapin aplikacionin Google Maps

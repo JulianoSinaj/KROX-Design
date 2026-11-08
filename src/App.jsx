@@ -15,15 +15,18 @@ export default function App() {
   return (
     <MotionConfig reducedMotion="user">
       <Navbar />
-      <main>
-        <Hero />
-        <About />
-        <Services />
-        <Projects />
-        <Contact />
-        <Locations />
-      </main>
-      <Footer />
+      {/* clip-x: asnjë seksion nuk mund të shtyjë faqen anash në mobile */}
+      <div className="clip-x relative w-full">
+        <main className="clip-x relative w-full">
+          <Hero />
+          <About />
+          <Services />
+          <Projects />
+          <Locations />
+          <Contact />
+        </main>
+        <Footer />
+      </div>
     </MotionConfig>
   )
 }

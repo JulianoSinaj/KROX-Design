@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
+import { ArrowRight } from 'lucide-react'
 import { company, navLinks } from '../../data/site'
 import { getLenis, scrollToTarget } from '../../hooks/useLenis'
+import { useMediaQuery } from '../../hooks/useMediaQuery'
 import { defaultMail, external, mailtoHref, mapsOpenUrl, telHref } from '../../data/contact'
 import Logo from '../ui/Logo'
 import MagneticButton from '../ui/MagneticButton'
@@ -29,12 +31,22 @@ function useActiveSection(ids) {
 
 const sectionIds = navLinks.map((l) => l.href)
 
+function lockScroll() {
+  getLenis()?.stop()
+  document.body.style.overflow = 'hidden'
+}
+function unlockScroll() {
+  getLenis()?.start()
+  document.body.style.overflow = ''
+}
+
 export default function Navbar() {
   const { scrollY } = useScroll()
   const [scrolled, setScrolled] = useState(false)
   const [hidden, setHidden] = useState(false)
   const [open, setOpen] = useState(false)
   const active = useActiveSection(sectionIds)
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   useMotionValueEvent(scrollY, 'change', (y) => {
     const prev = scrollY.getPrevious() ?? 0
@@ -44,23 +56,33 @@ export default function Navbar() {
     if (Math.abs(delta) > 6) setHidden(delta > 0 && y > 600)
   })
 
-  // Bllokon scroll-in kur menuja mobile është e hapur
+  // Bllokon scroll-in e faqes kur menuja mobile është e hapur
   useEffect(() => {
-    const lenis = getLenis()
-    if (open) {
-      lenis?.stop()
-      document.body.style.overflow = 'hidden'
-    } else {
-      lenis?.start()
-      document.body.style.overflow = ''
+    if (!open) return
+    lockScroll()
+    const onKey = (e) => e.key === 'Escape' && setOpen(false)
+    window.addEventListener('keydown', onKey)
+    return () => {
+      unlockScroll()
+      window.removeEventListener('keydown', onKey)
     }
   }, [open])
 
-  const go = (e, href) => {
+  // Nëse ekrani zmadhohet në desktop (p.sh. iPad rrotullohet), menuja mobile mbyllet
+  useEffect(() => {
+    if (isDesktop) setOpen(false)
+  }, [isDesktop])
+
+  const go = useCallback((e, href) => {
     e.preventDefault()
     setOpen(false)
-    scrollToTarget(href)
-  }
+    // Lenis injoron scrollTo kur është i ndalur, ndaj e lëshojmë menjëherë
+    // (pa pritur efektin e mbylljes së menusë) dhe pastaj lëvizim te seksioni.
+    unlockScroll()
+    requestAnimationFrame(() => scrollToTarget(href))
+  }, [])
+
+  const solid = scrolled || open
 
   return (
     <>
@@ -69,15 +91,25 @@ export default function Navbar() {
         animate={{ y: hidden && !open ? '-100%' : '0%' }}
         transition={{ duration: 0.8, ease }}
         className={`fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color,backdrop-filter] duration-700 ease-silk will-change-transform ${
-          scrolled || open ? 'border-accent/15 bg-ink/75 backdrop-blur-xl' : 'border-transparent bg-transparent'
+          open
+            ? 'border-accent/15 bg-ink'
+            : solid
+              ? 'border-accent/15 bg-ink/75 backdrop-blur-xl'
+              : 'border-transparent bg-transparent'
         }`}
       >
-        <nav className="container-site flex h-20 items-center justify-between">
-          <a href="#top" onClick={(e) => go(e, 0)} aria-label={`${company.name} — kreu`}>
+        <nav className="container-site flex h-16 items-center justify-between gap-6 sm:h-20">
+          <a
+            href="#top"
+            onClick={(e) => go(e, 0)}
+            aria-label={`${company.name} — kreu`}
+            className="relative z-10 shrink-0"
+          >
             <Logo />
           </a>
 
-          <ul className="hidden items-center gap-12 md:flex">
+          {/* Linqet desktop, vetëm nga 1024px, që të mos mbivendosen me logon në tablet */}
+          <ul className="hidden min-w-0 items-center gap-8 lg:flex xl:gap-12">
             {navLinks.filter((l) => l.href !== '#kontakt').map((link) => {
               const isActive = active === link.href
               return (
@@ -86,7 +118,7 @@ export default function Navbar() {
                     href={link.href}
                     onClick={(e) => go(e, link.href)}
                     aria-current={isActive ? 'true' : undefined}
-                    className={`group relative flex items-center gap-2 py-2 text-[12px] font-medium uppercase tracking-[0.2em] transition-colors duration-500 ${
+                    className={`group relative flex items-center gap-2 whitespace-nowrap py-2 text-[12px] font-medium uppercase tracking-[0.2em] transition-colors duration-500 ${
                       isActive ? 'text-accent-light' : 'text-mist hover:text-bone'
                     }`}
                   >
@@ -104,19 +136,21 @@ export default function Navbar() {
             })}
           </ul>
 
-          <div className="hidden md:block">
+          <div className="hidden shrink-0 lg:block">
             <MagneticButton variant="outline" href="#kontakt" onClick={(e) => go(e, '#kontakt')} className="!h-11 !px-7">
               Na kontaktoni
             </MagneticButton>
           </div>
 
-          {/* Butoni i menusë mobile */}
-          <button
+          {/* Butoni i menusë mobile / tablet */}
+          <motion.button
             type="button"
             onClick={() => setOpen((o) => !o)}
+            whileTap={{ scale: 0.96 }}
             aria-label={open ? 'Mbyll menunë' : 'Hap menunë'}
             aria-expanded={open}
-            className="relative flex h-11 w-11 items-center justify-center rounded-full border border-accent/30 transition-colors duration-500 hover:border-gold md:hidden"
+            aria-controls="menu-mobile"
+            className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-accent/30 transition-colors duration-500 hover:border-gold lg:hidden"
           >
             <span
               className={`absolute h-px w-5 bg-bone transition-transform duration-500 ease-expo ${
@@ -128,63 +162,89 @@ export default function Navbar() {
                 open ? '-rotate-45' : 'translate-y-[4px]'
               }`}
             />
-          </button>
+          </motion.button>
         </nav>
       </motion.header>
 
-      {/* Menuja mobile në ekran të plotë */}
+      {/* Menuja mobile në ekran të plotë: sfond grafit #0E0F11, e shfletueshme në ekrane të shkurtra */}
       <AnimatePresence>
         {open && (
           <motion.div
+            id="menu-mobile"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menuja"
+            data-lenis-prevent
             initial={{ clipPath: 'inset(0 0 100% 0)' }}
             animate={{ clipPath: 'inset(0 0 0% 0)' }}
             exit={{ clipPath: 'inset(0 0 100% 0)' }}
-            transition={{ duration: 0.8, ease }}
-            className="fixed inset-0 z-40 flex flex-col justify-between bg-ink px-5 pb-12 pt-32 sm:px-8 md:hidden"
+            transition={{ duration: 0.7, ease }}
+            className="fixed inset-0 z-40 h-[100dvh] overflow-y-auto overscroll-contain bg-ink lg:hidden"
           >
-            <div className="bg-blueprint pointer-events-none absolute inset-0 opacity-60" />
-            <ul className="relative space-y-3">
-              {navLinks.map((link, i) => (
-                <li key={link.href} className="overflow-hidden border-b border-accent/15">
-                  <motion.a
-                    href={link.href}
-                    onClick={(e) => go(e, link.href)}
-                    initial={{ y: '100%' }}
-                    animate={{ y: '0%' }}
-                    exit={{ y: '100%' }}
-                    transition={{ duration: 0.7, ease, delay: 0.15 + i * 0.07 }}
-                    className="flex items-baseline gap-5 py-4 font-display text-4xl font-medium text-bone"
-                  >
-                    <span className="text-xs text-gold">0{i + 1}</span>
-                    {link.label}
-                  </motion.a>
-                </li>
-              ))}
-            </ul>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { delay: 0.5 } }}
-              exit={{ opacity: 0 }}
-              className="relative space-y-1 text-sm text-mist"
-            >
-              <p className="eyebrow mb-3">Kontakt</p>
-              <a href={telHref(company.phone)} className="block py-1 transition-colors duration-500 hover:text-gold">
-                {company.phone}
-              </a>
-              <a
-                href={mailtoHref(company.email, defaultMail)}
-                className="block py-1 transition-colors duration-500 hover:text-gold"
+            <div className="bg-blueprint pointer-events-none fixed inset-0 opacity-60" />
+
+            <div className="container-site relative flex min-h-full flex-col pb-10 pt-24 sm:pt-32">
+              <ul className="space-y-1">
+                {navLinks.map((link, i) => {
+                  const isActive = active === link.href
+                  return (
+                    <li key={link.href} className="overflow-hidden border-b border-accent/15">
+                      <motion.a
+                        href={link.href}
+                        onClick={(e) => go(e, link.href)}
+                        initial={{ y: '100%' }}
+                        animate={{ y: '0%' }}
+                        exit={{ y: '100%' }}
+                        transition={{ duration: 0.6, ease, delay: 0.12 + i * 0.06 }}
+                        aria-current={isActive ? 'true' : undefined}
+                        className={`flex items-baseline gap-4 py-4 font-display text-[1.75rem] font-medium leading-tight transition-colors duration-500 sm:gap-5 sm:text-4xl ${
+                          isActive ? 'text-accent-light' : 'text-bone'
+                        }`}
+                      >
+                        <span className="w-6 shrink-0 text-xs tabular-nums text-gold">0{i + 1}</span>
+                        <span className="min-w-0 break-words">{link.label}</span>
+                      </motion.a>
+                    </li>
+                  )
+                })}
+              </ul>
+
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease, delay: 0.45 } }}
+                exit={{ opacity: 0, transition: { duration: 0.2 } }}
+                className="mt-10"
               >
-                {company.email}
-              </a>
-              <a
-                href={mapsOpenUrl(company.mapQuery)}
-                {...external}
-                className="block py-1 transition-colors duration-500 hover:text-gold"
+                <MagneticButton href="#kontakt" onClick={(e) => go(e, '#kontakt')} className="w-full">
+                  Na kontaktoni <ArrowRight size={16} />
+                </MagneticButton>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, transition: { delay: 0.55 } }}
+                exit={{ opacity: 0, transition: { duration: 0.2 } }}
+                className="mt-auto space-y-1 pt-10 text-sm text-mist"
               >
-                {company.address}
-              </a>
-            </motion.div>
+                <p className="eyebrow mb-3">Kontakt</p>
+                <a href={telHref(company.phone)} className="block py-2 transition-colors duration-500 hover:text-gold">
+                  {company.phone}
+                </a>
+                <a
+                  href={mailtoHref(company.email, defaultMail)}
+                  className="block break-all py-2 transition-colors duration-500 hover:text-gold"
+                >
+                  {company.email}
+                </a>
+                <a
+                  href={mapsOpenUrl(company.mapQuery)}
+                  {...external}
+                  className="block py-2 transition-colors duration-500 hover:text-gold"
+                >
+                  {company.address}
+                </a>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

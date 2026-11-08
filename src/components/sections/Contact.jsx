@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight, ArrowUpRight, Check, CheckCircle2, Clock, Copy, Mail, MapPin, Phone } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, Check, CheckCircle2, ChevronDown, Clock, Copy, Mail, MapPin, Phone } from 'lucide-react'
 import SectionTitle from '../ui/SectionTitle'
 import MagneticButton from '../ui/MagneticButton'
 import { company } from '../../data/site'
@@ -113,11 +113,11 @@ export default function Contact() {
   return (
     <section id="kontakt" className="section-pad relative border-t border-accent/10">
       <div className="container-site">
-        <SectionTitle index="04" label="Kontakt" title="Le të ndërtojmë diçka së bashku." className="max-w-3xl" />
+        <SectionTitle index="05" label="Kontakt" title="Le të ndërtojmë diçka së bashku." className="max-w-3xl" />
 
-        <div className="mt-20 grid gap-16 lg:grid-cols-12 lg:gap-24">
+        <div className="mt-12 grid gap-12 md:mt-20 md:gap-16 lg:grid-cols-12 lg:gap-12 xl:gap-24">
           {/* Informacioni + harta */}
-          <div className="lg:col-span-5">
+          <div className="min-w-0 lg:col-span-5">
             <ul className="divide-y divide-accent/15 border-y border-accent/15">
               {contactItems.map(({ icon: Icon, label, value, href, copy, external: isExternal }, i) => {
                 const content = (
@@ -127,7 +127,7 @@ export default function Contact() {
                     </span>
                     <span className="min-w-0">
                       <span className="block text-xs uppercase tracking-[0.2em] text-mist">{label}</span>
-                      <span className="mt-1 block break-words text-bone transition-colors duration-500 group-hover:text-gold">
+                      <span className="mt-1 block break-words text-bone [overflow-wrap:anywhere] transition-colors duration-500 group-hover:text-gold">
                         {value}
                       </span>
                     </span>
@@ -154,12 +154,12 @@ export default function Contact() {
                         href={href}
                         {...(isExternal ? external : {})}
                         aria-label={isExternal ? `${value} — hap në Google Maps` : undefined}
-                        className="group flex min-w-0 flex-1 items-center gap-5 py-5"
+                        className="group flex min-h-[72px] min-w-0 flex-1 items-center gap-4 py-4 sm:gap-5 sm:py-5"
                       >
                         {content}
                       </a>
                     ) : (
-                      <div className="group flex min-w-0 flex-1 items-center gap-5 py-5">{content}</div>
+                      <div className="group flex min-h-[72px] min-w-0 flex-1 items-center gap-4 py-4 sm:gap-5 sm:py-5">{content}</div>
                     )}
                     {copy && <CopyButton value={copy} label={label} />}
                   </motion.li>
@@ -173,16 +173,24 @@ export default function Contact() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.9, ease }}
-              className="relative mt-8 border border-accent/20 bg-graphite p-7"
+              className="relative mt-8 border border-accent/20 bg-graphite p-5 sm:p-7"
             >
               <span className="absolute left-0 top-0 h-6 w-6 border-l border-t border-gold/70" />
               <span className="absolute bottom-0 right-0 h-6 w-6 border-b border-r border-gold/70" />
               <p className="eyebrow">Të dhënat e shoqërisë</p>
+              {/* Mobile: etiketa sipër, vlera poshtë. Nga 640px: në një rresht. */}
               <dl className="mt-5 divide-y divide-accent/10 text-sm">
                 {legal.map(({ label, value }) => (
-                  <div key={label} className="flex items-baseline justify-between gap-6 py-3">
-                    <dt className="text-xs uppercase tracking-[0.18em] text-mist">{label}</dt>
-                    <dd className={`text-right text-bone ${label === 'NUIS' ? 'font-display tracking-[0.12em] text-accent-light' : ''}`}>
+                  <div
+                    key={label}
+                    className="flex flex-col gap-1 py-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
+                  >
+                    <dt className="text-[11px] uppercase tracking-[0.18em] text-mist sm:text-xs">{label}</dt>
+                    <dd
+                      className={`break-words text-bone sm:text-right ${
+                        label === 'NUIS' ? 'font-display tracking-[0.12em] text-accent-light' : ''
+                      }`}
+                    >
                       {value}
                     </dd>
                   </div>
@@ -210,9 +218,9 @@ export default function Contact() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.9, ease, delay: 0.1 }}
-            className="relative lg:col-span-7"
+            className="relative min-w-0 lg:col-span-7"
           >
-            <div className="relative border border-accent/15 bg-graphite p-6 sm:p-12">
+            <div className="relative border border-accent/15 bg-graphite p-5 sm:p-10 lg:p-12">
               <AnimatePresence mode="wait" initial={false}>
                 {status === 'sent' || status === 'mail' || status === 'error' ? (
                   <motion.div
@@ -221,7 +229,7 @@ export default function Contact() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.5, ease }}
-                    className="flex min-h-[540px] flex-col items-start justify-center"
+                    className="flex min-h-[420px] flex-col items-start justify-center sm:min-h-[540px]"
                     role="status"
                   >
                     {status === 'error' ? (
@@ -229,7 +237,7 @@ export default function Contact() {
                     ) : (
                       <CheckCircle2 size={48} strokeWidth={1.25} className="text-accent" />
                     )}
-                    <h3 className="mt-6 font-display text-3xl font-medium text-bone">
+                    <h3 className="mt-6 font-display text-2xl font-medium text-bone sm:text-3xl">
                       {status === 'sent' && 'Faleminderit!'}
                       {status === 'mail' && 'Mesazhi është gati.'}
                       {status === 'error' && 'Mesazhi nuk u dërgua.'}
@@ -248,7 +256,7 @@ export default function Contact() {
                         {status === 'error' && 'Ose na shkruani direkt në '}
                         <a
                           href={mailtoHref(company.email, composeMail(values))}
-                          className="text-accent-light underline decoration-accent/40 underline-offset-4 transition-colors duration-500 hover:text-gold"
+                          className="break-all text-accent-light underline decoration-accent/40 underline-offset-4 transition-colors duration-500 hover:text-gold"
                         >
                           {company.email}
                         </a>{' '}
@@ -262,14 +270,15 @@ export default function Contact() {
                         .
                       </p>
                     )}
-                    <div className="mt-8 flex flex-wrap gap-4">
+                    <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:gap-4">
                       {status === 'error' && (
-                        <MagneticButton onClick={() => openMailClient(composeMail(values))}>
-                          Hap aplikacionin e email-it <Mail size={15} />
+                        <MagneticButton onClick={() => openMailClient(composeMail(values))} className="w-full sm:w-auto">
+                          Dërgo me email <Mail size={15} />
                         </MagneticButton>
                       )}
                       <MagneticButton
                         variant="outline"
+                        className="w-full sm:w-auto"
                         onClick={() => {
                           if (status === 'mail') setValues(initial)
                           setStatus('idle')
@@ -288,7 +297,7 @@ export default function Contact() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.4 }}
-                    className="grid min-h-[540px] gap-x-8 gap-y-2 sm:grid-cols-2"
+                    className="grid w-full grid-cols-1 gap-x-8 gap-y-2 sm:min-h-[540px] sm:grid-cols-2"
                   >
                     <Field label="Emri dhe mbiemri *" error={errors.name}>
                       <input className="field" value={values.name} onChange={update('name')} placeholder="p.sh. Arben Hoxha" autoComplete="name" />
@@ -308,12 +317,23 @@ export default function Contact() {
                       />
                     </Field>
                     <Field label="Shërbimi">
-                      <select className="field cursor-pointer appearance-none bg-graphite" value={values.service} onChange={update('service')}>
-                        <option value="">Zgjidhni shërbimin</option>
-                        {services.map((s) => (
-                          <option key={s.id} value={s.id}>{s.title}</option>
-                        ))}
-                      </select>
+                      <span className="relative block">
+                        <select
+                          className="field cursor-pointer appearance-none truncate bg-graphite pr-8"
+                          value={values.service}
+                          onChange={update('service')}
+                        >
+                          <option value="">Zgjidhni shërbimin</option>
+                          {services.map((s) => (
+                            <option key={s.id} value={s.id}>{s.title}</option>
+                          ))}
+                        </select>
+                        <ChevronDown
+                          size={16}
+                          aria-hidden
+                          className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-accent"
+                        />
+                      </span>
                     </Field>
                     <Field label="Mesazhi *" error={errors.message} className="sm:col-span-2">
                       <textarea
@@ -325,11 +345,15 @@ export default function Contact() {
                       />
                     </Field>
 
-                    <div className="flex flex-col items-start justify-between gap-6 pt-4 sm:col-span-2 sm:flex-row sm:items-center">
-                      <p className="max-w-xs text-xs text-mist">
+                    <div className="flex flex-col items-stretch justify-between gap-5 pt-4 sm:col-span-2 sm:flex-row sm:items-center sm:gap-6">
+                      <p className="text-xs leading-relaxed text-mist sm:max-w-xs">
                         Duke dërguar formularin, pranoni që t'ju kontaktojmë në lidhje me kërkesën tuaj.
                       </p>
-                      <MagneticButton type="submit" disabled={status === 'sending'} className="min-w-[220px] disabled:opacity-70">
+                      <MagneticButton
+                        type="submit"
+                        disabled={status === 'sending'}
+                        className="w-full shrink-0 disabled:opacity-70 sm:w-auto sm:min-w-[220px]"
+                      >
                         {status === 'sending' ? 'Duke dërguar…' : (<>Dërgo mesazhin <ArrowRight size={16} /></>)}
                       </MagneticButton>
                     </div>

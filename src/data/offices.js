@@ -7,7 +7,7 @@ import {
 } from './contact'
 
 /**
- * Zyrat e KROX Design.
+ * Zyrat e KROX.
  * Për të shtuar një zyrë të re, kopjoni një objekt dhe ndryshoni fushat —
  * seksioni "Zyrat" (karta, harta, statusi, numëruesi) përditësohet automatikisht.
  *
@@ -18,7 +18,7 @@ export const offices = [
   {
     id: 'vlore-qendrore',
     label: 'Zyra qendrore',
-    name: 'KROX Design — Vlorë',
+    name: 'KROX — Vlorë',
     address: 'Vlorë, Shqipëri',
     city: 'Vlorë',
     country: 'Shqipëri',
@@ -40,7 +40,7 @@ export const offices = [
   // {
   //   id: 'tirane',
   //   label: 'Zyrë rajonale',
-  //   name: 'KROX Design — Tiranë',
+  //   name: 'KROX — Tiranë',
   //   address: 'Rruga …, Tiranë',
   //   city: 'Tiranë',
   //   country: 'Shqipëri',

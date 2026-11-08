@@ -44,7 +44,7 @@ export default function ProjectModal({ project, onClose }) {
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 24, opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.8, ease }}
-            className="relative grid max-h-[90vh] w-full max-w-5xl overflow-y-auto border border-accent/20 bg-onyx md:grid-cols-5"
+            className="relative grid max-h-[90vh] max-h-[90dvh] w-full max-w-5xl overflow-y-auto border border-accent/20 bg-onyx md:grid-cols-5"
           >
             <div className="relative aspect-[4/3] bg-ink md:col-span-3 md:aspect-auto md:min-h-[560px]">
               <FadeImage
@@ -55,11 +55,11 @@ export default function ProjectModal({ project, onClose }) {
               />
             </div>
 
-            <div className="flex flex-col p-8 md:col-span-2 md:p-12">
+            <div className="flex flex-col p-6 sm:p-8 md:col-span-2 md:p-12">
               <p className="eyebrow">
                 {categoryLabel(project.category)} · {project.type}
               </p>
-              <h3 className="mt-5 text-3xl font-medium leading-tight text-bone">{project.title}</h3>
+              <h3 className="mt-5 text-2xl font-medium leading-tight text-bone sm:text-3xl">{project.title}</h3>
               <p className="mt-6 text-sm leading-relaxed text-mist">{project.description}</p>
 
               <dl className="mt-10 divide-y divide-accent/15 border-y border-accent/15 text-sm">
