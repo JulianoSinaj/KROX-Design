@@ -3,7 +3,7 @@ import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 import { Award, Clock, Eye, ShieldCheck } from 'lucide-react'
 import SectionTitle from '../ui/SectionTitle'
 import Counter from '../ui/Counter'
-import { company, placeholder, stats, values, yearsActive } from '../../data/site'
+import { company, placeholder, stats, values } from '../../data/site'
 
 const icons = { Award, Clock, Eye, ShieldCheck }
 const ease = [0.22, 1, 0.36, 1]
@@ -31,7 +31,7 @@ export default function About() {
             >
               <motion.img
                 src={placeholder('about', 1000, 1300)}
-                alt="Ekipi i KROX Design në kantier"
+                alt="KROX Design në kantier"
                 loading="lazy"
                 style={{ y: imgY, scale: 1.2 }}
                 className="h-full w-full object-cover grayscale will-change-transform"
@@ -42,16 +42,17 @@ export default function About() {
               style={{ y: badgeY }}
               className="absolute -bottom-8 -right-4 bg-gold p-6 text-ink will-change-transform sm:-right-8 sm:p-8"
             >
-              <p className="font-display text-5xl font-bold leading-none">
-                <Counter value={yearsActive} suffix="+" />
+              <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-ink/70">Themeluar</p>
+              <p className="mt-2 font-display text-5xl font-bold leading-none">
+                <Counter value={company.founded} />
               </p>
-              <p className="mt-2 text-xs font-medium uppercase tracking-[0.2em]">Vite në terren</p>
+              <p className="mt-2 text-xs font-medium uppercase tracking-[0.2em]">{company.address}</p>
             </motion.div>
           </div>
 
           {/* Teksti */}
           <div className="lg:col-span-7">
-            <SectionTitle index="01" label="Rreth nesh" title="Ndërtojmë me përgjegjësi, saktësi dhe vizion." />
+            <SectionTitle index="01" label="Rreth nesh" title="Nga projekti te kolaudimi, me përgjegjësi dhe saktësi." />
 
             <motion.div
               initial={{ opacity: 0, y: 24 }}
@@ -61,18 +62,20 @@ export default function About() {
               className="mt-10 grid gap-6 text-base leading-relaxed text-mist md:grid-cols-2"
             >
               <p>
-                <span className="text-bone">KROX Design</span> është kompani ndërtimi e specializuar në
-                zbatimin e projekteve civile dhe industriale. Që nga viti {company.founded}, kemi
-                realizuar objekte banimi, godina komerciale dhe hale industriale në të gjithë vendin.
+                <span className="text-bone">KROX Design</span> ({company.legalName}) është shoqëri e
+                themeluar në {company.founded} me qendër në {company.city}. Ne mbulojmë gjithë ciklin e
+                një vepre: studimet gjeologo-inxhinierike dhe urbanistike, projektimin arkitektonik dhe
+                strukturor, zbatimin e punimeve dhe rikonstruksionet.
               </p>
               <p>
-                Ekipi ynë i inxhinierëve, teknikëve dhe specialistëve punon me standarde europiane, duke
-                vendosur cilësinë e punimeve dhe sigurinë në kantier në qendër të çdo vendimi.
+                Mbikëqyrja dhe kolaudimi i punimeve janë pjesë e shërbimit tonë, ndaj cilësia dhe
+                siguria në kantier kontrollohen në çdo fazë. Klienti ka një partner të vetëm dhe
+                përgjegjës nga ideja deri te dorëzimi.
               </p>
             </motion.div>
 
             {/* Statistikat */}
-            <div className="mt-14 grid grid-cols-2 border-l border-t border-accent/15 sm:grid-cols-4">
+            <div className="mt-14 grid grid-cols-3 border-l border-t border-accent/15">
               {stats.map((s, i) => (
                 <motion.div
                   key={s.label}

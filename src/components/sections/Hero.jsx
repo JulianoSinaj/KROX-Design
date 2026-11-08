@@ -3,7 +3,7 @@ import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import MagneticButton from '../ui/MagneticButton'
 import FadeImage from '../ui/FadeImage'
-import { company, placeholder, stats, yearsActive } from '../../data/site'
+import { company, placeholder, stats } from '../../data/site'
 import { scrollToTarget } from '../../hooks/useLenis'
 
 const ease = [0.22, 1, 0.36, 1]
@@ -16,8 +16,8 @@ const lines = [
 
 // Merren nga data/site.js — një burim i vetëm për numrat
 const facts = [
-  { value: `${yearsActive}+`, label: 'Vite eksperiencë' },
-  ...[stats[1], stats[3]].map((s) => ({ value: `${s.value}${s.suffix}`, label: s.label })),
+  { value: String(company.founded), label: 'Themeluar në' },
+  ...stats.slice(0, 2).map((s) => ({ value: `${s.value}${s.suffix}`, label: s.label })),
 ]
 
 export default function Hero() {
@@ -82,7 +82,7 @@ export default function Hero() {
             className="eyebrow mb-10 flex items-center gap-4"
           >
             <span className="h-px w-12 bg-gold" />
-            Ndërtim · Zbatim · Menaxhim
+            Projektim · Zbatim · Mbikëqyrje
           </motion.p>
 
           <h1
@@ -111,8 +111,8 @@ export default function Hero() {
             transition={{ duration: 1.1, ease, delay: 1.05 }}
             className="mt-10 max-w-xl text-base leading-relaxed text-bone/70 md:text-lg"
           >
-            KROX Design realizon ndërtime civile dhe industriale me cilësi, saktësi dhe siguri
-            maksimale në kantier, nga projekti deri në dorëzimin e çelësave.
+            KROX Design projekton, zbaton dhe mbikëqyr punime ndërtimi me cilësi, saktësi dhe siguri
+            maksimale në kantier, nga studimi i parë deri te kolaudimi.
           </motion.p>
 
           <motion.div

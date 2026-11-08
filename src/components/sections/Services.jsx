@@ -1,11 +1,19 @@
 import { motion } from 'framer-motion'
-import { ArrowUpRight, Building2, Calculator, DraftingCompass, HardHat } from 'lucide-react'
+import {
+  ArrowUpRight,
+  Calculator,
+  ClipboardCheck,
+  DraftingCompass,
+  HardHat,
+  Layers,
+  PencilRuler,
+} from 'lucide-react'
 import SectionTitle from '../ui/SectionTitle'
 import TiltCard from '../ui/TiltCard'
 import { services } from '../../data/services'
 import { scrollToTarget } from '../../hooks/useLenis'
 
-const icons = { Building2, Calculator, DraftingCompass, HardHat }
+const icons = { Calculator, ClipboardCheck, DraftingCompass, HardHat, Layers, PencilRuler }
 const ease = [0.22, 1, 0.36, 1]
 
 export default function Services() {
@@ -15,7 +23,7 @@ export default function Services() {
 
       <div className="container-site relative">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-          <SectionTitle index="02" label="Shërbimet" title="Gjithçka që i duhet projektit tuaj." className="max-w-2xl" />
+          <SectionTitle index="02" label="Shërbimet" title="Një partner për gjithë ciklin e veprës." className="max-w-2xl" />
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -23,12 +31,12 @@ export default function Services() {
             transition={{ duration: 0.8, ease, delay: 0.2 }}
             className="max-w-sm text-mist"
           >
-            Nga studimi i parë i fizibilitetit deri në dorëzimin e objektit, ju ofrojmë një partner të
-            vetëm dhe përgjegjës.
+            Nga studimet gjeologjike dhe projektimi, te zbatimi, mbikëqyrja dhe kolaudimi i punimeve,
+            me një ekip të vetëm dhe përgjegjës.
           </motion.p>
         </div>
 
-        <div className="mt-20 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-20 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {services.map((s, i) => {
             const Icon = icons[s.icon]
             return (
@@ -37,7 +45,7 @@ export default function Services() {
                 initial={{ opacity: 0, y: 50, rotateX: -12 }}
                 whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
                 viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.9, ease, delay: i * 0.1 }}
+                transition={{ duration: 0.9, ease, delay: (i % 3) * 0.1 }}
                 style={{ transformPerspective: 1000 }}
               >
                 <TiltCard className="h-full">

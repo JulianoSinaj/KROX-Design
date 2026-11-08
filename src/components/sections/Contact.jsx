@@ -42,8 +42,17 @@ export default function Contact() {
   const contactItems = [
     { icon: Phone, label: 'Telefon', value: company.phone, href: `tel:${company.phone.replace(/\s/g, '')}` },
     { icon: Mail, label: 'Email', value: company.email, href: `mailto:${company.email}` },
-    { icon: MapPin, label: 'Zyra', value: company.address },
+    { icon: MapPin, label: 'Zyra qendrore', value: company.address },
     { icon: Clock, label: 'Orari', value: company.hours },
+  ]
+
+  // Të dhënat zyrtare nga Ekstrakti i QKB-së
+  const legal = [
+    { label: 'Emri ligjor', value: company.legalName },
+    { label: 'Emri tregtar', value: company.name },
+    { label: 'NUIS', value: company.nuis },
+    { label: 'Administrator', value: company.administrator },
+    { label: 'Ortak', value: company.partner },
   ]
 
   return (
@@ -85,6 +94,29 @@ export default function Contact() {
               })}
             </ul>
 
+            {/* Të dhënat e shoqërisë */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.9, ease }}
+              className="relative mt-8 border border-accent/20 bg-graphite p-7"
+            >
+              <span className="absolute left-0 top-0 h-6 w-6 border-l border-t border-gold/70" />
+              <span className="absolute bottom-0 right-0 h-6 w-6 border-b border-r border-gold/70" />
+              <p className="eyebrow">Të dhënat e shoqërisë</p>
+              <dl className="mt-5 divide-y divide-accent/10 text-sm">
+                {legal.map(({ label, value }) => (
+                  <div key={label} className="flex items-baseline justify-between gap-6 py-3">
+                    <dt className="text-xs uppercase tracking-[0.18em] text-mist">{label}</dt>
+                    <dd className={`text-right text-bone ${label === 'NUIS' ? 'font-display tracking-[0.12em] text-accent-light' : ''}`}>
+                      {value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </motion.div>
+
             <motion.div
               initial={{ clipPath: 'inset(0 0 100% 0)' }}
               whileInView={{ clipPath: 'inset(0 0 0% 0)' }}
@@ -93,7 +125,7 @@ export default function Contact() {
               className="mt-8 aspect-[4/3] overflow-hidden border border-accent/15 bg-ink"
             >
               <iframe
-                title="Harta e zyrës KROX Design"
+                title={`Harta — ${company.name}, ${company.address}`}
                 src={`https://www.google.com/maps?q=${encodeURIComponent(company.mapQuery)}&output=embed`}
                 className="h-full w-full [filter:grayscale(1)_invert(0.92)_contrast(0.9)]"
                 loading="lazy"

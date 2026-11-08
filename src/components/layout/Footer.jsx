@@ -18,9 +18,25 @@ export default function Footer() {
           <div className="md:col-span-5">
             <Logo />
             <p className="mt-6 max-w-sm text-sm leading-relaxed text-mist">
-              Zbatim projektesh ndërtimi, ndërtime civile dhe industriale, menaxhim kantieri dhe
-              punime xhenile që prej vitit {company.founded}.
+              Projektim, zbatim punimesh ndërtimi, rikonstruksione, mbikëqyrje dhe kolaudim punimesh.
+              Me qendër në {company.city}, që nga {company.founded}.
             </p>
+            <ul className="mt-8 space-y-2 text-sm">
+              <li>
+                <a
+                  href={`tel:${company.phone.replace(/\s/g, '')}`}
+                  className="text-bone/80 transition-colors duration-500 hover:text-gold"
+                >
+                  {company.phone}
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${company.email}`} className="text-bone/80 transition-colors duration-500 hover:text-gold">
+                  {company.email}
+                </a>
+              </li>
+              <li className="text-mist">{company.address}</li>
+            </ul>
           </div>
 
           <div className="md:col-span-2">
@@ -70,7 +86,14 @@ export default function Footer() {
         </p>
 
         <div className="mt-10 flex flex-col items-start justify-between gap-6 border-t border-accent/15 pt-8 text-xs text-mist sm:flex-row sm:items-center">
-          <p>© {new Date().getFullYear()} {company.name}. Të gjitha të drejtat e rezervuara.</p>
+          <div className="space-y-1">
+            <p>
+              © {new Date().getFullYear()} {company.legalName} · {company.name}. Të gjitha të drejtat e rezervuara.
+            </p>
+            <p className="tracking-[0.12em] text-accent/70">
+              NUIS {company.nuis} · Administrator: {company.administrator}
+            </p>
+          </div>
           <MagneticButton variant="outline" onClick={() => scrollToTarget(0)} className="!h-11 !px-5">
             Kthehu lart <ArrowUp size={14} />
           </MagneticButton>
