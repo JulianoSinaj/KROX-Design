@@ -67,8 +67,8 @@
   /* "KROX" në sfond të footer-it — shtrihet në gjithë gjerësinë e ekranit */
   .footer-wordmark {
     @apply whitespace-nowrap text-center font-display font-bold;
-    font-size: 38vw;
-    line-height: 0.74;
+    font-size: clamp(3rem, 13vw, 11rem);
+    line-height: 0.8;
     letter-spacing: -0.045em;
   }
 
