@@ -139,8 +139,6 @@ export default function Footer() {
             </p>
             {/* Të dhënat zyrtare: një për rresht në mobile, në një rresht nga 640px */}
             <p className="flex flex-col gap-1 tracking-[0.12em] text-accent/70 sm:flex-row sm:flex-wrap sm:gap-x-2">
-              <span>NUIS {company.nuis}</span>
-              <span aria-hidden className="hidden sm:inline">·</span>
               <span>Administrator: {company.administrator}</span>
               <span aria-hidden className="hidden sm:inline">·</span>
               <span>{company.city}</span>

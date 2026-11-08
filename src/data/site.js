@@ -8,10 +8,8 @@ export const placeholder = (seed, w = 1400, h = 1000) =>
 export const company = {
   name: 'KROX',          // emri tregtar
   legalName: 'KROX Shpk',       // emri ligjor
-  nuis: 'M26404203C',
   founded: 2022,                // data e themelimit: 03/02/2022
   administrator: 'Kristi Sako',
-  partner: 'Oksana Sako',
   phone: '+355 69 958 3595',
   email: 'valeronshpk@gmail.com',
   city: 'Vlorë',

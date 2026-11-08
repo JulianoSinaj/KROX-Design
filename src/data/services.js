@@ -1,4 +1,4 @@
-// Shërbimet sipas objektit të aktivitetit në Ekstraktin e QKB-së (KROX Shpk, NUIS M26404203C).
+// Shërbimet sipas objektit të aktivitetit në Ekstraktin e QKB-së (KROX Shpk).
 // Ikonat janë emra nga lucide-react (https://lucide.dev/icons)
 export const services = [
   {

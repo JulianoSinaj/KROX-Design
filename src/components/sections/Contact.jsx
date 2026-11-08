@@ -105,9 +105,7 @@ export default function Contact() {
   const legal = [
     { label: 'Emri ligjor', value: company.legalName },
     { label: 'Emri tregtar', value: company.name },
-    { label: 'NUIS', value: company.nuis },
     { label: 'Administrator', value: company.administrator },
-    { label: 'Ortak', value: company.partner },
   ]
 
   return (
@@ -187,9 +185,7 @@ export default function Contact() {
                   >
                     <dt className="text-[11px] uppercase tracking-[0.18em] text-mist sm:text-xs">{label}</dt>
                     <dd
-                      className={`break-words text-bone sm:text-right ${
-                        label === 'NUIS' ? 'font-display tracking-[0.12em] text-accent-light' : ''
-                      }`}
+                      className="break-words text-bone sm:text-right"
                     >
                       {value}
                     </dd>
