@@ -3,7 +3,7 @@ import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import MagneticButton from '../ui/MagneticButton'
 import FadeImage from '../ui/FadeImage'
-import { company, placeholder, stats } from '../../data/site'
+import { placeholder } from '../../data/site'
 import { scrollToTarget } from '../../hooks/useLenis'
 
 const ease = [0.22, 1, 0.36, 1]
@@ -12,12 +12,6 @@ const lines = [
   { text: 'Nga ideja te zbatimi', accent: false },
   { text: 'me standardet', accent: false },
   { text: 'më të larta.', accent: true },
-]
-
-// Merren nga data/site.js — një burim i vetëm për numrat
-const facts = [
-  { value: String(company.founded), label: 'Themeluar në' },
-  ...stats.slice(0, 2).map((s) => ({ value: `${s.value}${s.suffix}`, label: s.label })),
 ]
 
 export default function Hero() {
@@ -105,54 +99,35 @@ export default function Hero() {
             ))}
           </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.1, ease, delay: 1.05 }}
-            className="mt-10 max-w-xl text-base leading-relaxed text-bone/70 md:text-lg"
-          >
-            KROX Design projekton, zbaton dhe mbikëqyr punime ndërtimi me cilësi, saktësi dhe siguri
-            maksimale në kantier, nga studimi i parë deri te kolaudimi.
-          </motion.p>
+          <div className="mt-10">
+            <div>
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.1, ease, delay: 1.05 }}
+                className="max-w-xl text-base leading-relaxed text-bone/70 md:text-lg"
+              >
+                KROX Design projekton, zbaton dhe mbikëqyr punime ndërtimi me cilësi, saktësi dhe siguri
+                maksimale në kantier, nga studimi i parë deri te kolaudimi.
+              </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.1, ease, delay: 1.2 }}
-            className="mt-12 flex flex-wrap gap-4"
-          >
-            <MagneticButton href="#projektet" onClick={(e) => go(e, '#projektet')}>
-              Shiko projektet <ArrowRight size={16} />
-            </MagneticButton>
-            <MagneticButton href="#kontakt" variant="outline" onClick={(e) => go(e, '#kontakt')}>
-              Na kontaktoni
-            </MagneticButton>
-          </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.1, ease, delay: 1.2 }}
+                className="mt-12 flex flex-wrap gap-4"
+              >
+                <MagneticButton href="#projektet" onClick={(e) => go(e, '#projektet')}>
+                  Shiko projektet <ArrowRight size={16} />
+                </MagneticButton>
+                <MagneticButton href="#kontakt" variant="outline" onClick={(e) => go(e, '#kontakt')}>
+                  Na kontaktoni
+                </MagneticButton>
+              </motion.div>
+            </div>
+          </div>
         </motion.div>
       </div>
-
-      {/* Shiriti i poshtëm */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.4, delay: 1.5 }}
-        className="absolute inset-x-0 bottom-0"
-      >
-        <div className="container-site flex items-end justify-between pb-10">
-          <dl className="hidden gap-12 md:flex">
-            {facts.map((f) => (
-              <div key={f.label} className="border-l border-accent/20 pl-5">
-                <dt className="text-[11px] uppercase tracking-[0.2em] text-mist">{f.label}</dt>
-                <dd className="mt-1 font-display text-2xl font-medium text-accent-light">{f.value}</dd>
-              </div>
-            ))}
-          </dl>
-
-          <p className="text-[11px] uppercase tracking-eyebrow text-mist md:hidden">
-            Që nga {company.founded}
-          </p>
-        </div>
-      </motion.div>
     </section>
   )
 }
