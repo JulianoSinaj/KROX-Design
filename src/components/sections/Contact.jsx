@@ -1,31 +1,60 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight, CheckCircle2, Clock, Mail, MapPin, Phone } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, Check, CheckCircle2, Clock, Copy, Mail, MapPin, Phone } from 'lucide-react'
 import SectionTitle from '../ui/SectionTitle'
 import MagneticButton from '../ui/MagneticButton'
 import { company } from '../../data/site'
 import { services } from '../../data/services'
+import { defaultMail, external, mailtoHref, mapsOpenUrl, telHref } from '../../data/contact'
 import { scrollToTarget } from '../../hooks/useLenis'
 
 const ease = [0.22, 1, 0.36, 1]
 const initial = { name: '', email: '', phone: '', service: '', message: '' }
+const MESSAGE_MAX = 1500 // mailto ka kufi gjatësie në disa klientë
+
+/**
+ * Opsionale: një endpoint që pranon POST JSON (p.sh. Formspree: https://formspree.io/f/xxxx).
+ * Vendoseni te .env si VITE_CONTACT_ENDPOINT=... — pa të, formulari hap aplikacionin
+ * e email-it me mesazhin të parambushur drejt adresës së kompanisë.
+ */
+const ENDPOINT = import.meta.env.VITE_CONTACT_ENDPOINT
 
 function validate(v) {
   const e = {}
   if (!v.name.trim()) e.name = 'Ju lutem shkruani emrin.'
-  if (!/^\S+@\S+\.\S+$/.test(v.email)) e.email = 'Email-i nuk është i vlefshëm.'
+  if (!/^\S+@\S+\.\S+$/.test(v.email.trim())) e.email = 'Email-i nuk është i vlefshëm.'
+  if (v.phone.trim() && !/^\+?[\d\s()-]{6,20}$/.test(v.phone.trim())) e.phone = 'Numri i telefonit nuk është i vlefshëm.'
   if (v.message.trim().length < 10) e.message = 'Mesazhi duhet të ketë të paktën 10 karaktere.'
   return e
+}
+
+/** Ndërton subjektin dhe tekstin e email-it nga fushat e formularit. */
+function composeMail(v) {
+  const service = services.find((s) => s.id === v.service)?.title
+  const subject = `Kërkesë nga faqja${service ? ` — ${service}` : ''} · ${v.name.trim()}`
+  const details = [
+    `Emri: ${v.name.trim()}`,
+    `Email: ${v.email.trim()}`,
+    v.phone.trim() && `Telefoni: ${v.phone.trim()}`,
+    service && `Shërbimi: ${service}`,
+  ].filter(Boolean)
+  const body = `${details.join('\n')}\n\n${v.message.trim()}`
+  return { subject, body, service }
 }
 
 export default function Contact() {
   const [values, setValues] = useState(initial)
   const [errors, setErrors] = useState({})
-  const [status, setStatus] = useState('idle') // idle | sending | sent
+  const [status, setStatus] = useState('idle') // idle | sending | sent | mail | error
 
   const update = (key) => (e) => {
     setValues((v) => ({ ...v, [key]: e.target.value }))
     if (errors[key]) setErrors((er) => ({ ...er, [key]: undefined }))
+  }
+
+  const openMailClient = (mail) => {
+    window.location.href = mailtoHref(company.email, mail)
+    setStatus('mail')
   }
 
   const onSubmit = async (e) => {
@@ -33,17 +62,42 @@ export default function Contact() {
     const found = validate(values)
     setErrors(found)
     if (Object.keys(found).length) return
+
+    const mail = composeMail(values)
+
+    // Pa backend → hapet aplikacioni i email-it me gjithçka gati për t'u dërguar
+    if (!ENDPOINT) {
+      openMailClient(mail)
+      return
+    }
+
     setStatus('sending')
-    // TODO: lidheni me backend-in / shërbimin e email-it (p.sh. Formspree, EmailJS, API e brendshme)
-    await new Promise((r) => setTimeout(r, 1200))
-    setStatus('sent')
-    setValues(initial)
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name: values.name.trim(),
+          email: values.email.trim(),
+          phone: values.phone.trim(),
+          service: mail.service ?? '',
+          message: values.message.trim(),
+          _subject: mail.subject,
+          _replyto: values.email.trim(),
+        }),
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      setStatus('sent')
+      setValues(initial)
+    } catch {
+      setStatus('error')
+    }
   }
 
   const contactItems = [
-    { icon: Phone, label: 'Telefon', value: company.phone, href: `tel:${company.phone.replace(/\s/g, '')}` },
-    { icon: Mail, label: 'Email', value: company.email, href: `mailto:${company.email}` },
-    { icon: MapPin, label: 'Zyra qendrore', value: company.address },
+    { icon: Phone, label: 'Telefon', value: company.phone, href: telHref(company.phone), copy: company.phone },
+    { icon: Mail, label: 'Email', value: company.email, href: mailtoHref(company.email, defaultMail), copy: company.email },
+    { icon: MapPin, label: 'Zyra qendrore', value: company.address, href: mapsOpenUrl(company.mapQuery), external: true },
     { icon: Clock, label: 'Orari', value: company.hours },
   ]
 
@@ -65,16 +119,25 @@ export default function Contact() {
           {/* Informacioni + harta */}
           <div className="lg:col-span-5">
             <ul className="divide-y divide-accent/15 border-y border-accent/15">
-              {contactItems.map(({ icon: Icon, label, value, href }, i) => {
+              {contactItems.map(({ icon: Icon, label, value, href, copy, external: isExternal }, i) => {
                 const content = (
                   <>
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-accent/15 text-accent transition-colors duration-500 group-hover:bg-accent group-hover:text-ink">
                       <Icon size={18} strokeWidth={1.5} />
                     </span>
-                    <span>
+                    <span className="min-w-0">
                       <span className="block text-xs uppercase tracking-[0.2em] text-mist">{label}</span>
-                      <span className="mt-1 block text-bone">{value}</span>
+                      <span className="mt-1 block break-words text-bone transition-colors duration-500 group-hover:text-gold">
+                        {value}
+                      </span>
                     </span>
+                    {isExternal && (
+                      <ArrowUpRight
+                        size={16}
+                        aria-hidden
+                        className="ml-auto shrink-0 text-accent transition-transform duration-700 ease-expo group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                      />
+                    )}
                   </>
                 )
                 return (
@@ -84,12 +147,21 @@ export default function Contact() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.7, ease, delay: i * 0.08 }}
+                    className="flex items-center gap-3"
                   >
                     {href ? (
-                      <a href={href} className="group flex items-center gap-5 py-5">{content}</a>
+                      <a
+                        href={href}
+                        {...(isExternal ? external : {})}
+                        aria-label={isExternal ? `${value} — hap në Google Maps` : undefined}
+                        className="group flex min-w-0 flex-1 items-center gap-5 py-5"
+                      >
+                        {content}
+                      </a>
                     ) : (
-                      <div className="group flex items-center gap-5 py-5">{content}</div>
+                      <div className="group flex min-w-0 flex-1 items-center gap-5 py-5">{content}</div>
                     )}
+                    {copy && <CopyButton value={copy} label={label} />}
                   </motion.li>
                 )
               })}
@@ -142,23 +214,70 @@ export default function Contact() {
           >
             <div className="relative border border-accent/15 bg-graphite p-6 sm:p-12">
               <AnimatePresence mode="wait" initial={false}>
-                {status === 'sent' ? (
+                {status === 'sent' || status === 'mail' || status === 'error' ? (
                   <motion.div
-                    key="sent"
+                    key={status}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.5, ease }}
                     className="flex min-h-[540px] flex-col items-start justify-center"
+                    role="status"
                   >
-                    <CheckCircle2 size={48} strokeWidth={1.25} className="text-accent" />
-                    <h3 className="mt-6 font-display text-3xl font-medium text-bone">Faleminderit!</h3>
+                    {status === 'error' ? (
+                      <Mail size={48} strokeWidth={1.25} className="text-danger" />
+                    ) : (
+                      <CheckCircle2 size={48} strokeWidth={1.25} className="text-accent" />
+                    )}
+                    <h3 className="mt-6 font-display text-3xl font-medium text-bone">
+                      {status === 'sent' && 'Faleminderit!'}
+                      {status === 'mail' && 'Mesazhi është gati.'}
+                      {status === 'error' && 'Mesazhi nuk u dërgua.'}
+                    </h3>
                     <p className="mt-3 max-w-md text-mist">
-                      Mesazhi juaj u dërgua me sukses. Një nga inxhinierët tanë do t'ju kontaktojë brenda 24 orëve.
+                      {status === 'sent' &&
+                        "Mesazhi juaj u dërgua me sukses. Një nga inxhinierët tanë do t'ju kontaktojë brenda 24 orëve."}
+                      {status === 'mail' &&
+                        'U hap aplikacioni juaj i email-it me mesazhin të plotësuar. Shtypni "Dërgo" për ta nisur.'}
+                      {status === 'error' &&
+                        'Ndodhi një problem me lidhjen. Mund ta dërgoni të njëjtin mesazh nga aplikacioni juaj i email-it.'}
                     </p>
-                    <MagneticButton variant="outline" className="mt-8" onClick={() => setStatus('idle')}>
-                      Dërgo një mesazh tjetër
-                    </MagneticButton>
+                    {status !== 'sent' && (
+                      <p className="mt-4 max-w-md text-sm text-mist">
+                        {status === 'mail' && 'Nuk u hap asgjë? Na shkruani direkt në '}
+                        {status === 'error' && 'Ose na shkruani direkt në '}
+                        <a
+                          href={mailtoHref(company.email, composeMail(values))}
+                          className="text-accent-light underline decoration-accent/40 underline-offset-4 transition-colors duration-500 hover:text-gold"
+                        >
+                          {company.email}
+                        </a>{' '}
+                        ose na telefononi në{' '}
+                        <a
+                          href={telHref(company.phone)}
+                          className="whitespace-nowrap text-accent-light underline decoration-accent/40 underline-offset-4 transition-colors duration-500 hover:text-gold"
+                        >
+                          {company.phone}
+                        </a>
+                        .
+                      </p>
+                    )}
+                    <div className="mt-8 flex flex-wrap gap-4">
+                      {status === 'error' && (
+                        <MagneticButton onClick={() => openMailClient(composeMail(values))}>
+                          Hap aplikacionin e email-it <Mail size={15} />
+                        </MagneticButton>
+                      )}
+                      <MagneticButton
+                        variant="outline"
+                        onClick={() => {
+                          if (status === 'mail') setValues(initial)
+                          setStatus('idle')
+                        }}
+                      >
+                        {status === 'error' ? 'Kthehu te formulari' : 'Dërgo një mesazh tjetër'}
+                      </MagneticButton>
+                    </div>
                   </motion.div>
                 ) : (
                   <motion.form
@@ -175,10 +294,18 @@ export default function Contact() {
                       <input className="field" value={values.name} onChange={update('name')} placeholder="p.sh. Arben Hoxha" autoComplete="name" />
                     </Field>
                     <Field label="Email *" error={errors.email}>
-                      <input className="field" type="email" value={values.email} onChange={update('email')} placeholder="emri@kompania.al" autoComplete="email" />
+                      <input className="field" type="email" inputMode="email" value={values.email} onChange={update('email')} placeholder="emri@kompania.al" autoComplete="email" />
                     </Field>
-                    <Field label="Telefoni">
-                      <input className="field" type="tel" value={values.phone} onChange={update('phone')} placeholder="+355 6X XXX XXXX" autoComplete="tel" />
+                    <Field label="Telefoni" error={errors.phone}>
+                      <input
+                        className="field"
+                        type="tel"
+                        inputMode="tel"
+                        value={values.phone}
+                        onChange={update('phone')}
+                        placeholder="+355 6X XXX XXXX"
+                        autoComplete="tel"
+                      />
                     </Field>
                     <Field label="Shërbimi">
                       <select className="field cursor-pointer appearance-none bg-graphite" value={values.service} onChange={update('service')}>
@@ -193,6 +320,7 @@ export default function Contact() {
                         className="field h-32 resize-none py-3"
                         value={values.message}
                         onChange={update('message')}
+                        maxLength={MESSAGE_MAX}
                         placeholder="Na tregoni shkurt për projektin tuaj: lloji, vendndodhja, afati…"
                       />
                     </Field>
@@ -213,6 +341,59 @@ export default function Contact() {
         </div>
       </div>
     </section>
+  )
+}
+
+/** Kopjon tekstin në clipboard — i dobishëm në desktop, ku tel:/mailto: shpesh s'kanë aplikacion. */
+function CopyButton({ value, label }) {
+  const [copied, setCopied] = useState(false)
+  const timer = useRef(null)
+  useEffect(() => () => clearTimeout(timer.current), [])
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(value)
+    } catch {
+      // Rezervë për shfletues të vjetër ose kontekste jo-HTTPS
+      const ta = document.createElement('textarea')
+      ta.value = value
+      ta.setAttribute('readonly', '')
+      ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none'
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      ta.remove()
+    }
+    setCopied(true)
+    clearTimeout(timer.current)
+    timer.current = setTimeout(() => setCopied(false), 1800)
+  }
+
+  return (
+    <motion.button
+      type="button"
+      onClick={copy}
+      whileTap={{ scale: 0.96 }}
+      aria-label={copied ? `${label} u kopjua` : `Kopjo ${label.toLowerCase()}`}
+      title={copied ? 'U kopjua' : 'Kopjo'}
+      className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden border border-accent/15 text-mist transition-colors duration-500 hover:border-gold hover:text-gold"
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={copied ? 'ok' : 'copy'}
+          initial={{ y: 12, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -12, opacity: 0 }}
+          transition={{ duration: 0.25, ease }}
+          className={copied ? 'text-gold' : ''}
+        >
+          {copied ? <Check size={16} strokeWidth={1.75} /> : <Copy size={16} strokeWidth={1.5} />}
+        </motion.span>
+      </AnimatePresence>
+      <span className="sr-only" aria-live="polite">
+        {copied ? 'U kopjua' : ''}
+      </span>
+    </motion.button>
   )
 }
 

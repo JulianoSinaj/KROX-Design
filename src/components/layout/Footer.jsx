@@ -1,6 +1,7 @@
 import { ArrowUp } from 'lucide-react'
 import { company, navLinks } from '../../data/site'
 import { services } from '../../data/services'
+import { defaultMail, external, mailtoHref, mapsOpenUrl, telHref } from '../../data/contact'
 import { scrollToTarget } from '../../hooks/useLenis'
 import Logo from '../ui/Logo'
 import MagneticButton from '../ui/MagneticButton'
@@ -23,19 +24,27 @@ export default function Footer() {
             </p>
             <ul className="mt-8 space-y-2 text-sm">
               <li>
-                <a
-                  href={`tel:${company.phone.replace(/\s/g, '')}`}
-                  className="text-bone/80 transition-colors duration-500 hover:text-gold"
-                >
+                <a href={telHref(company.phone)} className="text-bone/80 transition-colors duration-500 hover:text-gold">
                   {company.phone}
                 </a>
               </li>
               <li>
-                <a href={`mailto:${company.email}`} className="text-bone/80 transition-colors duration-500 hover:text-gold">
+                <a
+                  href={mailtoHref(company.email, defaultMail)}
+                  className="text-bone/80 transition-colors duration-500 hover:text-gold"
+                >
                   {company.email}
                 </a>
               </li>
-              <li className="text-mist">{company.address}</li>
+              <li>
+                <a
+                  href={mapsOpenUrl(company.mapQuery)}
+                  {...external}
+                  className="text-mist transition-colors duration-500 hover:text-gold"
+                >
+                  {company.address}
+                </a>
+              </li>
             </ul>
           </div>
 

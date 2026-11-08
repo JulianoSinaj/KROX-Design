@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import { company, navLinks } from '../../data/site'
 import { getLenis, scrollToTarget } from '../../hooks/useLenis'
+import { defaultMail, external, mailtoHref, mapsOpenUrl, telHref } from '../../data/contact'
 import Logo from '../ui/Logo'
 import MagneticButton from '../ui/MagneticButton'
 
@@ -167,8 +168,22 @@ export default function Navbar() {
               className="relative space-y-1 text-sm text-mist"
             >
               <p className="eyebrow mb-3">Kontakt</p>
-              <p>{company.phone}</p>
-              <p>{company.email}</p>
+              <a href={telHref(company.phone)} className="block py-1 transition-colors duration-500 hover:text-gold">
+                {company.phone}
+              </a>
+              <a
+                href={mailtoHref(company.email, defaultMail)}
+                className="block py-1 transition-colors duration-500 hover:text-gold"
+              >
+                {company.email}
+              </a>
+              <a
+                href={mapsOpenUrl(company.mapQuery)}
+                {...external}
+                className="block py-1 transition-colors duration-500 hover:text-gold"
+              >
+                {company.address}
+              </a>
             </motion.div>
           </motion.div>
         )}

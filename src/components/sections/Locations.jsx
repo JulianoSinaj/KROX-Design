@@ -12,6 +12,7 @@ import {
   offices,
   telHref,
 } from '../../data/offices'
+import { defaultMail, mailtoHref } from '../../data/contact'
 
 const ease = [0.22, 1, 0.36, 1]
 
@@ -258,7 +259,7 @@ function OfficeCard({ office, index, active, status, onSelect }) {
                 <Phone size={15} className="shrink-0 text-accent" /> {office.phone}
               </a>
               <a
-                href={`mailto:${office.email}`}
+                href={mailtoHref(office.email, defaultMail)}
                 className="flex items-center gap-3 text-bone/90 transition-colors duration-500 hover:text-gold"
               >
                 <Mail size={15} className="shrink-0 text-accent" /> {office.email}

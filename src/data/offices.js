@@ -1,4 +1,10 @@
 import { company } from './site'
+import {
+  mapsDirectionsUrl as mapsDirections,
+  mapsEmbedUrl as mapsEmbed,
+  mapsOpenUrl as mapsOpen,
+  telHref,
+} from './contact'
 
 /**
  * Zyrat e KROX Design.
@@ -90,8 +96,7 @@ export function formatCoords({ lat, lng }) {
   return `${dm(lat, 'N', 'S')} · ${dm(lng, 'E', 'W')}`
 }
 
-export const mapsEmbedUrl = (o) => `https://www.google.com/maps?q=${encodeURIComponent(o.mapQuery)}&output=embed`
-export const mapsOpenUrl = (o) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.mapQuery)}`
-export const mapsDirectionsUrl = (o) =>
-  `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(o.mapQuery)}`
-export const telHref = (phone) => `tel:${phone.replace(/\s/g, '')}`
+export const mapsEmbedUrl = (o) => mapsEmbed(o.mapQuery)
+export const mapsOpenUrl = (o) => mapsOpen(o.mapQuery)
+export const mapsDirectionsUrl = (o) => mapsDirections(o.mapQuery)
+export { telHref }
