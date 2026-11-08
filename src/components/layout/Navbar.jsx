@@ -77,7 +77,7 @@ export default function Navbar() {
           </a>
 
           <ul className="hidden items-center gap-12 md:flex">
-            {navLinks.slice(0, 3).map((link) => {
+            {navLinks.filter((l) => l.href !== '#kontakt').map((link) => {
               const isActive = active === link.href
               return (
                 <li key={link.href}>

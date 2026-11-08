@@ -7,6 +7,7 @@ import About from './components/sections/About'
 import Services from './components/sections/Services'
 import Projects from './components/sections/Projects'
 import Contact from './components/sections/Contact'
+import Locations from './components/sections/Locations'
 
 export default function App() {
   useLenis()
@@ -20,6 +21,7 @@ export default function App() {
         <Services />
         <Projects />
         <Contact />
+        <Locations />
       </main>
       <Footer />
     </MotionConfig>

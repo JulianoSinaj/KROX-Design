@@ -5,6 +5,7 @@ import SectionTitle from '../ui/SectionTitle'
 import MagneticButton from '../ui/MagneticButton'
 import { company } from '../../data/site'
 import { services } from '../../data/services'
+import { scrollToTarget } from '../../hooks/useLenis'
 
 const ease = [0.22, 1, 0.36, 1]
 const initial = { name: '', email: '', phone: '', service: '', message: '' }
@@ -117,21 +118,18 @@ export default function Contact() {
               </dl>
             </motion.div>
 
-            <motion.div
-              initial={{ clipPath: 'inset(0 0 100% 0)' }}
-              whileInView={{ clipPath: 'inset(0 0 0% 0)' }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 1.1, ease }}
-              className="mt-8 aspect-[4/3] overflow-hidden border border-accent/15 bg-ink"
+            {/* Harta ndodhet te seksioni "Zyrat" */}
+            <a
+              href="#zyrat"
+              onClick={(e) => {
+                e.preventDefault()
+                scrollToTarget('#zyrat')
+              }}
+              className="group mt-8 flex items-center justify-between border-b border-accent/15 pb-4 text-xs font-medium uppercase tracking-[0.2em] text-bone transition-colors duration-500 hover:text-gold"
             >
-              <iframe
-                title={`Harta — ${company.name}, ${company.address}`}
-                src={`https://www.google.com/maps?q=${encodeURIComponent(company.mapQuery)}&output=embed`}
-                className="h-full w-full [filter:grayscale(1)_invert(0.92)_contrast(0.9)]"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </motion.div>
+              Shiko zyrat në hartë
+              <ArrowRight size={16} className="text-accent transition-transform duration-700 ease-expo group-hover:translate-x-1" />
+            </a>
           </div>
 
           {/* Formulari */}

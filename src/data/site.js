@@ -31,6 +31,7 @@ export const navLinks = [
   { label: 'Shërbimet', href: '#sherbimet' },
   { label: 'Projektet', href: '#projektet' },
   { label: 'Kontakt', href: '#kontakt' },
+  { label: 'Zyrat', href: '#zyrat' },
 ]
 
 export const yearsActive = new Date().getFullYear() - company.founded
