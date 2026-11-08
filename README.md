@@ -282,8 +282,6 @@ Kodi burimor shpërndahet nën licencën **MIT**. Shihni skedarin [`LICENSE`](LI
 
 <div align="center">
 
-Ndërtuar me ❤️ nga **[Juliano Sinaj](https://github.com/JulianoSinaj)** në Shqipëri 🇦🇱
-
-<sub>⭐ Nëse ju pëlqeu projekti, jepini një yll në GitHub!</sub>
+⭐ Nëse ju pëlqeu projekti, jepini një yll në GitHub dhe kontaktoni per te tilla bashkepunnime!
 
 </div>
