@@ -36,7 +36,7 @@
     @apply mx-auto w-full max-w-site px-5 sm:px-8 lg:px-16;
   }
   .section-pad {
-    @apply py-28 md:py-40 lg:py-52;
+    @apply py-16 md:py-20 lg:py-24;
   }
 
   /* Kartë standarde: gri pak më e çelur se sfondi + kornizë champagne e hollë */

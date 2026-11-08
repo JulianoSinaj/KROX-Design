@@ -139,22 +139,6 @@ export default function Hero() {
         className="absolute inset-x-0 bottom-0"
       >
         <div className="container-site flex items-end justify-between pb-10">
-          <button
-            type="button"
-            onClick={() => scrollToTarget('#rreth-nesh')}
-            className="flex items-center gap-4 text-[11px] uppercase tracking-eyebrow text-mist transition-colors duration-500 hover:text-accent"
-            aria-label="Shko te seksioni Rreth nesh"
-          >
-            <span className="relative block h-14 w-px overflow-hidden bg-accent/20">
-              <motion.span
-                className="absolute inset-x-0 top-0 h-1/2 bg-gold"
-                animate={{ y: ['-100%', '200%'] }}
-                transition={{ duration: 2.4, repeat: Infinity, ease: [0.65, 0, 0.35, 1] }}
-              />
-            </span>
-            Scroll
-          </button>
-
           <dl className="hidden gap-12 md:flex">
             {facts.map((f) => (
               <div key={f.label} className="border-l border-accent/20 pl-5">
