@@ -3,10 +3,17 @@ import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 import { Award, Clock, Eye, ShieldCheck } from 'lucide-react'
 import SectionTitle from '../ui/SectionTitle'
 import Counter from '../ui/Counter'
-import { company, placeholder, stats, values } from '../../data/site'
+import { company, stats, values } from '../../data/site'
 
 const icons = { Award, Clock, Eye, ShieldCheck }
 const ease = [0.22, 1, 0.36, 1]
+
+// Foto: Unsplash (licencë falas, edhe për përdorim komercial) — images.unsplash.com/photo-1504307651254-35680f356dfd
+// Kur të keni foto nga kantieret e KROX, zëvendësoni dy skedarët te /public/images me të njëjtin emër (raport 4:5).
+const aboutImg = {
+  src: '/images/about-kantier-1400.webp',
+  srcSet: '/images/about-kantier-800.webp 800w, /images/about-kantier-1400.webp 1400w',
+}
 
 export default function About() {
   const imgRef = useRef(null)
@@ -20,7 +27,7 @@ export default function About() {
       <div className="container-site">
         <div className="grid items-center gap-14 md:gap-16 lg:grid-cols-12 lg:gap-12 xl:gap-20">
           {/* Imazhi */}
-          <div className="relative lg:col-span-5">
+          <div className="group relative lg:col-span-5">
             <motion.div
               ref={imgRef}
               initial={{ clipPath: 'inset(100% 0 0 0)' }}
@@ -29,18 +36,35 @@ export default function About() {
               transition={{ duration: 1.2, ease }}
               className="relative aspect-[4/5] overflow-hidden bg-graphite"
             >
-              <motion.img
-                src={placeholder('about', 1000, 1300)}
-                alt="KROX në kantier"
-                loading="lazy"
-                style={{ y: imgY, scale: 1.2 }}
-                className="h-full w-full object-cover grayscale will-change-transform"
-              />
+              {/* Zoom-i i hover-it është te një element më vete, që të mos përplaset me transform-in e parallax-it */}
+              <div className="h-full w-full transition-transform duration-1600 ease-expo will-change-transform group-hover:scale-[1.04]">
+                <motion.img
+                  src={aboutImg.src}
+                  srcSet={aboutImg.srcSet}
+                  sizes="(min-width: 1024px) 40vw, 100vw"
+                  width={1400}
+                  height={1750}
+                  alt="Punëtorë në kantier mbi një soletë betonarmeje, mes armaturës së hekurit"
+                  loading="lazy"
+                  decoding="async"
+                  style={{ y: imgY, scale: 1.2 }}
+                  className="h-full w-full object-cover brightness-[0.78] contrast-[1.08] grayscale transition-[filter] duration-1200 ease-silk will-change-transform group-hover:brightness-100 group-hover:contrast-100 group-hover:grayscale-0"
+                />
+              </div>
+
+              {/* Tonalitet champagne mbi bardh e zi — zhduket në hover dhe lë ngjyrat reale */}
+              <span aria-hidden className="pointer-events-none absolute inset-0 bg-accent/40 mix-blend-color transition-opacity duration-1200 ease-silk group-hover:opacity-0" />
+              {/* Overlay grafit: errëson foton që të shkrihet me sfondin */}
+              <span aria-hidden className="pointer-events-none absolute inset-0 bg-ink/35 transition-opacity duration-1200 ease-silk group-hover:opacity-0" />
+              {/* Gradient poshtë: bazë e errët ku ulet kutia gold */}
+              <span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-ink/30 transition-opacity duration-1200 ease-silk group-hover:opacity-60" />
+              {/* Kornizë e hollë, si te kartat e projekteve */}
+              <span aria-hidden className="pointer-events-none absolute inset-3 border border-accent/15 transition-colors duration-1000 ease-silk group-hover:border-gold/30 sm:inset-4" />
             </motion.div>
 
             <motion.div
               style={{ y: badgeY }}
-              className="absolute -bottom-8 -right-4 bg-gold p-6 text-ink will-change-transform sm:-right-8 sm:p-8"
+              className="absolute -bottom-8 -right-4 bg-gold p-6 text-ink shadow-card will-change-transform sm:-right-8 sm:p-8"
             >
               <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-ink/70">Themeluar</p>
               <p className="mt-2 font-display text-5xl font-bold leading-none">
