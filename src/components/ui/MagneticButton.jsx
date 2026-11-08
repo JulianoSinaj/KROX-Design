@@ -17,6 +17,12 @@ const variants = {
     fill: 'bg-gold/[0.08]',
     hoverText: 'text-gold',
   },
+  // Kornizë gold e hollë → në hover korniza ndizet plotësisht, mbushja ngrihet dhe teksti kalon në gold
+  gold: {
+    base: 'border border-gold/40 text-bone hover:border-gold hover:shadow-gold',
+    fill: 'bg-gold/[0.08]',
+    hoverText: 'text-gold',
+  },
   dark: {
     base: 'border border-accent/15 bg-graphite text-bone hover:border-gold',
     fill: 'bg-gold/[0.08]',

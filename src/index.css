@@ -64,10 +64,10 @@
     @apply py-16 md:py-20 lg:py-24;
   }
 
-  /* "KROX" në sfond të footer-it — shtrihet në gjithë gjerësinë e ekranit */
+  /* "KROX" si watermark në sfond të footer-it — e qendërzuar, ~88% e gjerësisë së ekranit */
   .footer-wordmark {
     @apply whitespace-nowrap text-center font-display font-bold;
-    font-size: clamp(3rem, 13vw, 11rem);
+    font-size: clamp(6rem, 34vw, 30rem);
     line-height: 0.8;
     letter-spacing: -0.045em;
   }

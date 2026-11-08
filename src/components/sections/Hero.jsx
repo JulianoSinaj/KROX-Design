@@ -27,7 +27,7 @@ export default function Hero() {
     <section
       ref={ref}
       id="top"
-      className="relative h-[100svh] min-h-[600px] overflow-hidden bg-ink sm:min-h-[680px] lg:min-h-[720px]"
+      className="relative overflow-hidden bg-ink sm:h-[100svh] sm:min-h-[680px] lg:min-h-[720px]"
     >
       {/* Foto e kantierit me parallax */}
       <motion.div className="absolute inset-0 will-change-transform" style={{ y: bgY, scale: bgScale }}>
@@ -63,7 +63,7 @@ export default function Hero() {
       <div className="relative h-full" style={{ perspective: 1200 }}>
         <motion.div
           style={{ y: contentY, rotateX: contentRotate, opacity: contentOpacity, transformOrigin: 'center top' }}
-          className="container-site flex h-full flex-col justify-center pt-16 will-change-transform sm:pt-20"
+          className="container-site flex h-full flex-col justify-center pb-14 pt-28 will-change-transform sm:pb-0 sm:pt-20"
         >
           <motion.p
             initial={{ opacity: 0, x: -16 }}

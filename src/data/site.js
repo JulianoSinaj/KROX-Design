@@ -17,10 +17,8 @@ export const company = {
   hours: 'E Hënë – E Shtunë · 08:00 – 18:00', // TODO: konfirmoni orarin real
   mapQuery: 'Vlorë, Shqipëri',
   socials: [
-    // TODO: vendosni linket reale të rrjeteve sociale
-    { label: 'Facebook', href: '#' },
-    { label: 'Instagram', href: '#' },
-    { label: 'LinkedIn', href: '#' },
+    { label: 'Instagram', href: 'https://www.instagram.com/kroxshpk/' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/kristi-sako-89a063197/' },
   ],
 }
 
