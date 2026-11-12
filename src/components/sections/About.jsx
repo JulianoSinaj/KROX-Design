@@ -30,10 +30,6 @@ export default function About() {
           <div className="group relative lg:col-span-5">
             <motion.div
               ref={imgRef}
-              initial={{ clipPath: 'inset(100% 0 0 0)' }}
-              whileInView={{ clipPath: 'inset(0% 0 0 0)' }}
-              viewport={{ once: true, margin: '-100px' }}
-              transition={{ duration: 1.2, ease }}
               className="relative aspect-[4/5] overflow-hidden bg-graphite"
             >
               {/* Zoom-i i hover-it është te një element më vete, që të mos përplaset me transform-in e parallax-it */}
