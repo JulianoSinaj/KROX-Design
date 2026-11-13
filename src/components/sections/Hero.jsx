@@ -1,7 +1,6 @@
 import { useRef } from 'react'
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 import FadeImage from '../ui/FadeImage'
-import { placeholder } from '../../data/site'
 
 const ease = [0.22, 1, 0.36, 1]
 
@@ -32,7 +31,9 @@ export default function Hero() {
       {/* Foto e kantierit me parallax */}
       <motion.div className="absolute inset-0 will-change-transform" style={{ y: bgY, scale: bgScale }}>
         <FadeImage
-          src={placeholder('hero', 2200, 1400)}
+          src="/images/hero-1920.webp"
+          srcSet="/images/hero-1000.webp 1000w, /images/hero-1920.webp 1920w"
+          sizes="100vw"
           alt=""
           fetchpriority="high"
           className="h-full w-full object-cover grayscale-[0.6] sepia-[0.15]"

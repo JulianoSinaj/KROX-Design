@@ -1,10 +1,6 @@
 // Të dhënat e përgjithshme të kompanisë.
 // Burimi: Ekstrakti i Regjistrit Tregtar (QKB), datë 28/07/2026.
 
-/** Foto shembull (placeholder). Zëvendësojini me foto reale te /public/images. */
-export const placeholder = (seed, w = 1400, h = 1000) =>
-  `https://picsum.photos/seed/krox-${seed}/${w}/${h}`
-
 export const company = {
   name: 'KROX',          // emri tregtar
   legalName: 'KROX Shpk',       // emri ligjor

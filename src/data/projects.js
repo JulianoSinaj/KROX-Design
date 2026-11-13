@@ -1,5 +1,3 @@
-import { placeholder } from './site'
-
 export const categories = [
   { id: 'all', label: 'Të gjitha' },
   { id: 'rezidenciale', label: 'Rezidenciale' },
@@ -9,8 +7,10 @@ export const categories = [
 
 export const categoryLabel = (id) => categories.find((c) => c.id === id)?.label ?? id
 
-// Foto vertikale 4:5 — përputhet me formatin e kartës në carousel
-const img = (seed) => placeholder(seed, 1000, 1250)
+// Foto vertikale 4:5 (900×1125) — përputhet me formatin e kartës në carousel.
+// Skedarët janë te /public/images/projects/<id>.webp (Unsplash, licencë falas).
+// Për foto reale të KROX, zëvendësoni skedarin me të njëjtin emër.
+const img = (id) => `/images/projects/${id}.webp`
 
 /**
  * category: 'rezidenciale' | 'komerciale' | 'industriale' (përdoret nga filtrat)
@@ -25,7 +25,7 @@ export const projects = [
     location: 'Tiranë',
     year: 2024,
     area: '12,400 m²',
-    image: img('p1'),
+    image: img('rezidenca-liqeni'),
     description: 'Kompleks banimi me 3 kulla 9-katëshe, parkim nëntokësor dhe ambiente të gjelbra.',
   },
   {
@@ -36,7 +36,7 @@ export const projects = [
     location: 'Durrës',
     year: 2023,
     area: '8,200 m²',
-    image: img('p2'),
+    image: img('qendra-biznesi-adriatik'),
     description: 'Godinë zyrash me fasadë xhami strukturale dhe kate tregtare në nivelin përdhes.',
   },
   {
@@ -47,7 +47,7 @@ export const projects = [
     location: 'Vorë',
     year: 2024,
     area: '15,000 m²',
-    image: img('p3'),
+    image: img('hale-logjistike-vore'),
     description: 'Magazinë logjistike me strukturë metalike, rampa ngarkimi dhe sistem kundër zjarrit.',
   },
   {
@@ -58,7 +58,7 @@ export const projects = [
     location: 'Tiranë',
     year: 2022,
     area: '640 m²',
-    image: img('p4'),
+    image: img('vila-dajti'),
     description: 'Vilë private me strukturë b/a, xham panoramik dhe pishinë infinity.',
   },
   {
@@ -69,7 +69,7 @@ export const projects = [
     location: 'Vlorë',
     year: 2023,
     area: '21,000 m²',
-    image: img('p5'),
+    image: img('qendra-tregtare-jug'),
     description: 'Qendër tregtare me 2 kate, food court dhe parkim për 400 automjete.',
   },
   {
@@ -80,7 +80,7 @@ export const projects = [
     location: 'Elbasan',
     year: 2021,
     area: '9,600 m²',
-    image: img('p6'),
+    image: img('fabrika-elbasan'),
     description: 'Objekt prodhimi me dysheme industriale, urë vinçi dhe zyra administrative.',
   },
   {
@@ -91,7 +91,7 @@ export const projects = [
     location: 'Shkodër',
     year: 2021,
     area: '7,800 m²',
-    image: img('p7'),
+    image: img('kompleksi-park'),
     description: 'Pallate banimi 6-katëshe me ambiente tregtare në katin përdhe.',
   },
   {
@@ -102,7 +102,7 @@ export const projects = [
     location: 'Sarandë',
     year: 2022,
     area: '5,400 m²',
-    image: img('p8'),
+    image: img('hotel-bregdeti'),
     description: 'Hotel 4-yjësh me 80 dhoma, restorant dhe spa pranë detit.',
   },
   {
@@ -113,7 +113,7 @@ export const projects = [
     location: 'Fier',
     year: 2023,
     area: '4,200 m²',
-    image: img('p9'),
+    image: img('depo-frigoriferike-fier'),
     description: 'Depo frigoriferike me panele sandwich izoluese dhe zona me temperaturë të kontrolluar.',
   },
 ]
