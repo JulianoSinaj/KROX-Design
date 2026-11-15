@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { MotionConfig } from 'framer-motion'
 import { getLenis, scrollToTarget, useLenis } from './hooks/useLenis'
 import { findTarget, usePath } from './hooks/useRoute'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
+import IntroSplash from './components/layout/IntroSplash'
 import Hero from './components/sections/Hero'
 import About from './components/sections/About'
 import Services from './components/sections/Services'
@@ -58,6 +59,9 @@ export default function App() {
   useLenis()
   const path = usePath()
   useRouteScroll(path)
+  // Ndryshon kur mbaron intro: faqja rimontohet që animacionet e hyrjes të luajnë pikërisht kur zbulohet
+  const [introDone, setIntroDone] = useState(false)
+  const handleIntroFinish = useCallback(() => setIntroDone(true), [])
 
   return (
     <MotionConfig reducedMotion="user">
@@ -65,11 +69,13 @@ export default function App() {
       {/* clip-x: asnjë seksion nuk mund të shtyjë faqen anash në mobile */}
       <div className="clip-x relative w-full">
         {/* key: çdo faqe montohet nga e para, që animacionet e hyrjes të luajnë sërish */}
-        <main key={path} className="clip-x relative w-full">
+        <main key={`${path}:${introDone}`} className="clip-x relative w-full">
           {path === '/karriera' ? <Careers /> : <Home />}
         </main>
         <Footer />
       </div>
+      {/* E fundit në DOM, që të mbulojë edhe Navbar-in (i cili është gjithashtu z-50) */}
+      <IntroSplash onFinish={handleIntroFinish} />
     </MotionConfig>
   )
 }
