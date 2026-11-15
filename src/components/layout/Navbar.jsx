@@ -5,6 +5,7 @@ import { company, navLinks } from '../../data/site'
 import { getLenis } from '../../hooks/useLenis'
 import { goTo, resolveHref, usePath } from '../../hooks/useRoute'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
+import { applyHref } from '../../data/careers'
 import { defaultMail, external, mailtoHref, mapsOpenUrl, telHref } from '../../data/contact'
 import Logo from '../ui/Logo'
 import MagneticButton from '../ui/MagneticButton'
@@ -53,8 +54,7 @@ export default function Navbar() {
   // Në faqet më vete (p.sh. /karriera) aktive është vetë faqja
   const active = path === '/' ? activeSection : path
   const onCareers = path === '/karriera'
-  // CTA-ja e shiritit: në faqen e karrierës çon te formulari i aplikimit
-  const cta = onCareers ? { label: 'Apliko tani', href: '#apliko' } : { label: 'Na kontaktoni', href: '#kontakt' }
+  const cta = onCareers ? { label: 'Dërgo CV-në', href: applyHref() } : { label: 'Na kontaktoni', href: '#kontakt' }
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   useMotionValueEvent(scrollY, 'change', (y) => {
@@ -90,6 +90,10 @@ export default function Navbar() {
     unlockScroll()
     requestAnimationFrame(() => goTo(href))
   }, [])
+  const onCtaClick = (e) => {
+    if (cta.href.startsWith('#')) go(e, cta.href)
+    else setOpen(false)
+  }
 
   const solid = scrolled || open
 
@@ -146,7 +150,7 @@ export default function Navbar() {
           </ul>
 
           <div className="hidden shrink-0 lg:block">
-            <MagneticButton variant="outline" href={cta.href} onClick={(e) => go(e, cta.href)} className="!h-11 !px-7">
+            <MagneticButton variant="outline" href={cta.href} onClick={onCtaClick} className="!h-11 !px-7">
               {cta.label}
             </MagneticButton>
           </div>
@@ -224,7 +228,7 @@ export default function Navbar() {
                 exit={{ opacity: 0, transition: { duration: 0.2 } }}
                 className="mt-10"
               >
-                <MagneticButton href={cta.href} onClick={(e) => go(e, cta.href)} className="w-full">
+                <MagneticButton href={cta.href} onClick={onCtaClick} className="w-full">
                   {cta.label} <ArrowRight size={16} />
                 </MagneticButton>
               </motion.div>

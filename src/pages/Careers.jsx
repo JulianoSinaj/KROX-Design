@@ -1,28 +1,19 @@
-import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
-  ArrowRight,
   ArrowUpRight,
   Building2,
-  CheckCircle2,
-  ChevronDown,
   Clock,
   GraduationCap,
   Handshake,
   Mail,
-  MapPin,
-  Paperclip,
   Phone,
   ShieldCheck,
 } from 'lucide-react'
 import SectionTitle from '../components/ui/SectionTitle'
 import MagneticButton from '../components/ui/MagneticButton'
-import CopyButton from '../components/ui/CopyButton'
-import Field from '../components/ui/Field'
 import { company } from '../data/site'
 import { benefits, roles, spontaneous, steps, applyHref } from '../data/careers'
-import { external, mailtoHref, mapsOpenUrl, telHref } from '../data/contact'
-import { goTo } from '../hooks/useRoute'
+import { telHref } from '../data/contact'
 
 const icons = { ShieldCheck, Handshake, GraduationCap, Building2 }
 const ease = [0.22, 1, 0.36, 1]
@@ -34,11 +25,6 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.8, ease, delay },
 })
 
-const toApply = (e) => {
-  e.preventDefault()
-  goTo('#apliko')
-}
-
 export default function Careers() {
   return (
     <>
@@ -46,11 +32,9 @@ export default function Careers() {
       <Benefits />
       <Roles />
       <Process />
-      <Apply />
     </>
   )
 }
-
 /* ───────────────────────── Hero ───────────────────────── */
 
 function CareersHero() {
@@ -119,9 +103,6 @@ function CareersHero() {
               transition={{ duration: 0.9, ease, delay: 0.85 }}
               className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4"
             >
-              <MagneticButton href="#apliko" onClick={toApply} className="w-full sm:w-auto">
-                Apliko tani <ArrowRight size={16} />
-              </MagneticButton>
               <MagneticButton variant="outline" href={telHref(company.phone)} className="w-full sm:w-auto">
                 <Phone size={15} /> {company.phone}
               </MagneticButton>
@@ -318,260 +299,5 @@ function Process() {
         </ol>
       </div>
     </section>
-  )
-}
-
-/* ───────────────────────── Aplikimi ───────────────────────── */
-
-const initial = { name: '', phone: '', email: '', position: '', experience: '', message: '' }
-const experienceOptions = ['Pa përvojë / praktikant', '1 – 3 vite', '3 – 5 vite', 'Mbi 5 vite']
-
-function validate(v) {
-  const e = {}
-  if (!v.name.trim()) e.name = 'Ju lutem shkruani emrin.'
-  if (!/^\+?[\d\s()-]{6,20}$/.test(v.phone.trim())) e.phone = 'Shkruani një numër telefoni të vlefshëm.'
-  if (v.email.trim() && !/^\S+@\S+\.\S+$/.test(v.email.trim())) e.email = 'Email-i nuk është i vlefshëm.'
-  return e
-}
-
-function composeApplication(v) {
-  const position = v.position || spontaneous
-  const lines = [
-    `Emri dhe mbiemri: ${v.name.trim()}`,
-    `Telefoni: ${v.phone.trim()}`,
-    v.email.trim() && `Email: ${v.email.trim()}`,
-    `Pozicioni: ${position}`,
-    v.experience && `Përvoja: ${v.experience}`,
-  ].filter(Boolean)
-  const body = `Përshëndetje KROX,\n\n${lines.join('\n')}\n\n${v.message.trim() ? `${v.message.trim()}\n\n` : ''}Bashkëngjit CV-në time.\n\nFaleminderit,\n${v.name.trim()}\n`
-  return { subject: `Aplikim pune — ${position} · ${v.name.trim()}`, body }
-}
-
-function Apply() {
-  const [values, setValues] = useState(initial)
-  const [errors, setErrors] = useState({})
-  const [sent, setSent] = useState(false)
-
-  const update = (key) => (e) => {
-    setValues((v) => ({ ...v, [key]: e.target.value }))
-    if (errors[key]) setErrors((er) => ({ ...er, [key]: undefined }))
-  }
-
-  const onSubmit = (e) => {
-    e.preventDefault()
-    const found = validate(values)
-    setErrors(found)
-    if (Object.keys(found).length) return
-    window.location.href = mailtoHref(company.email, composeApplication(values))
-    setSent(true)
-  }
-
-  const items = [
-    { icon: Phone, label: 'Telefononi', value: company.phone, href: telHref(company.phone), copy: company.phone },
-    { icon: Mail, label: 'Dërgoni CV-në', value: company.email, href: applyHref(), copy: company.email },
-    { icon: Clock, label: 'Orari', value: company.hours },
-    { icon: MapPin, label: 'Zyra', value: company.address, href: mapsOpenUrl(company.mapQuery), external: true },
-  ]
-
-  return (
-    <section id="apliko" className="section-pad relative border-t border-accent/10">
-      <div className="container-site">
-        <SectionTitle index="04" label="Apliko" title="Bëhuni pjesë e ekipit." className="max-w-3xl" />
-
-        <div className="mt-12 grid gap-12 md:mt-20 md:gap-16 lg:grid-cols-12 lg:gap-12 xl:gap-24">
-          {/* Kontakti */}
-          <div className="min-w-0 lg:col-span-5">
-            <motion.p {...fadeUp(0.1)} className="max-w-md leading-relaxed text-mist">
-              Mënyra më e shpejtë është një telefonatë. Nëse preferoni email-in, dërgoni CV-në dhe një përshkrim të
-              shkurtër të përvojës suaj — ju kontaktojmë nëse profili përputhet me nevojat tona.
-            </motion.p>
-
-            <ul className="mt-10 divide-y divide-accent/15 border-y border-accent/15">
-              {items.map(({ icon: Icon, label, value, href, copy, external: isExternal }, i) => {
-                const content = (
-                  <>
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-accent/15 text-accent transition-colors duration-500 group-hover:bg-accent group-hover:text-ink">
-                      <Icon size={18} strokeWidth={1.5} />
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block text-xs uppercase tracking-[0.2em] text-mist">{label}</span>
-                      <span className="mt-1 block text-bone [overflow-wrap:anywhere] transition-colors duration-500 group-hover:text-gold">
-                        {value}
-                      </span>
-                    </span>
-                    {isExternal && <ArrowUpRight size={16} aria-hidden className="ml-auto shrink-0 text-accent" />}
-                  </>
-                )
-                const cls = 'group flex min-h-[72px] min-w-0 flex-1 items-center gap-4 py-4 sm:gap-5 sm:py-5'
-                return (
-                  <motion.li
-                    key={label}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.7, ease, delay: i * 0.08 }}
-                    className="flex items-center gap-3"
-                  >
-                    {href ? (
-                      <a href={href} {...(isExternal ? external : {})} className={cls}>
-                        {content}
-                      </a>
-                    ) : (
-                      <div className={cls}>{content}</div>
-                    )}
-                    {copy && <CopyButton value={copy} label={label === 'Telefononi' ? 'Telefonin' : 'Email-in'} />}
-                  </motion.li>
-                )
-              })}
-            </ul>
-
-            <motion.p {...fadeUp(0.2)} className="mt-8 flex items-start gap-3 text-sm leading-relaxed text-mist">
-              <Paperclip size={16} className="mt-0.5 shrink-0 text-gold" />
-              Bashkëngjitni CV-në në PDF dhe, nëse keni, certifikata, licenca profesionale ose foto nga punimet e
-              mëparshme.
-            </motion.p>
-          </div>
-
-          {/* Formulari */}
-          <motion.div {...fadeUp(0.1)} className="relative min-w-0 lg:col-span-7">
-            <div className="relative border border-accent/15 bg-graphite p-5 sm:p-10 lg:p-12">
-              <AnimatePresence mode="wait" initial={false}>
-                {sent ? (
-                  <motion.div
-                    key="sent"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.5, ease }}
-                    className="flex min-h-[420px] flex-col items-start justify-center sm:min-h-[520px]"
-                    role="status"
-                  >
-                    <CheckCircle2 size={48} strokeWidth={1.25} className="text-accent" />
-                    <h3 className="mt-6 font-display text-2xl font-medium text-bone sm:text-3xl">Aplikimi është gati.</h3>
-                    <p className="mt-3 max-w-md text-mist">
-                      U hap aplikacioni juaj i email-it me të dhënat e plotësuara.{' '}
-                      <span className="text-bone">Bashkëngjitni CV-në</span> dhe shtypni "Dërgo".
-                    </p>
-                    <p className="mt-4 max-w-md text-sm text-mist">
-                      Nuk u hap asgjë? Dërgojeni CV-në direkt në{' '}
-                      <a
-                        href={mailtoHref(company.email, composeApplication(values))}
-                        className="break-all text-accent-light underline decoration-accent/40 underline-offset-4 transition-colors duration-500 hover:text-gold"
-                      >
-                        {company.email}
-                      </a>{' '}
-                      ose na telefononi në{' '}
-                      <a
-                        href={telHref(company.phone)}
-                        className="whitespace-nowrap text-accent-light underline decoration-accent/40 underline-offset-4 transition-colors duration-500 hover:text-gold"
-                      >
-                        {company.phone}
-                      </a>
-                      .
-                    </p>
-                    <MagneticButton
-                      variant="outline"
-                      className="mt-8 w-full sm:w-auto"
-                      onClick={() => {
-                        setValues(initial)
-                        setSent(false)
-                      }}
-                    >
-                      Plotëso një aplikim tjetër
-                    </MagneticButton>
-                  </motion.div>
-                ) : (
-                  <motion.form
-                    key="form"
-                    noValidate
-                    onSubmit={onSubmit}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4 }}
-                    className="grid w-full grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-2"
-                  >
-                    <Field label="Emri dhe mbiemri *" error={errors.name}>
-                      <input className="field" value={values.name} onChange={update('name')} placeholder="p.sh. Arben Hoxha" autoComplete="name" />
-                    </Field>
-                    <Field label="Telefoni *" error={errors.phone}>
-                      <input
-                        className="field"
-                        type="tel"
-                        inputMode="tel"
-                        value={values.phone}
-                        onChange={update('phone')}
-                        placeholder="+355 6X XXX XXXX"
-                        autoComplete="tel"
-                      />
-                    </Field>
-                    <Field label="Email" error={errors.email}>
-                      <input
-                        className="field"
-                        type="email"
-                        inputMode="email"
-                        value={values.email}
-                        onChange={update('email')}
-                        placeholder="emri@email.com"
-                        autoComplete="email"
-                      />
-                    </Field>
-                    <Field label="Pozicioni">
-                      <Select value={values.position} onChange={update('position')} placeholder="Zgjidhni pozicionin">
-                        {roles.map((r) => (
-                          <option key={r.id} value={r.title}>
-                            {r.title}
-                          </option>
-                        ))}
-                        <option value={spontaneous}>{spontaneous}</option>
-                      </Select>
-                    </Field>
-                    <Field label="Përvoja" className="sm:col-span-2">
-                      <Select value={values.experience} onChange={update('experience')} placeholder="Vitet e përvojës">
-                        {experienceOptions.map((o) => (
-                          <option key={o} value={o}>
-                            {o}
-                          </option>
-                        ))}
-                      </Select>
-                    </Field>
-                    <Field label="Rreth jush" className="sm:col-span-2">
-                      <textarea
-                        className="field h-28 resize-none py-3"
-                        value={values.message}
-                        onChange={update('message')}
-                        maxLength={1200}
-                        placeholder="Përvoja, kualifikimet, ku keni punuar më parë, kur mund të filloni…"
-                      />
-                    </Field>
-
-                    <div className="flex flex-col items-stretch justify-between gap-5 pt-4 sm:col-span-2 sm:flex-row sm:items-center sm:gap-6">
-                      <p className="text-xs leading-relaxed text-mist sm:max-w-xs">
-                        Formulari hap aplikacionin tuaj të email-it — mos harroni të bashkëngjitni CV-në.
-                      </p>
-                      <MagneticButton type="submit" className="w-full shrink-0 sm:w-auto sm:min-w-[220px]">
-                        Dërgo aplikimin <ArrowRight size={16} />
-                      </MagneticButton>
-                    </div>
-                  </motion.form>
-                )}
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function Select({ value, onChange, placeholder, children }) {
-  return (
-    <span className="relative block">
-      <select className="field cursor-pointer appearance-none truncate bg-graphite pr-8" value={value} onChange={onChange}>
-        <option value="">{placeholder}</option>
-        {children}
-      </select>
-      <ChevronDown size={16} aria-hidden className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-accent" />
-    </span>
   )
 }
