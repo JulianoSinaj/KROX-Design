@@ -5,6 +5,7 @@ import { company, navLinks } from '../../data/site'
 import { services } from '../../data/services'
 import { defaultMail, external, mailtoHref, mapsOpenUrl, telHref } from '../../data/contact'
 import { scrollToTarget } from '../../hooks/useLenis'
+import { goTo, resolveHref, usePath } from '../../hooks/useRoute'
 import Logo from '../ui/Logo'
 import MagneticButton from '../ui/MagneticButton'
 
@@ -20,9 +21,10 @@ function Column({ title, children }) {
 }
 
 export default function Footer() {
+  const path = usePath()
   const go = (e, href) => {
     e.preventDefault()
-    scrollToTarget(href)
+    goTo(href)
   }
 
   // Progresi ndërsa footer-i hyn në ekran: 0 kur sapo shfaqet, 1 kur arrihet fundi i faqes
@@ -101,7 +103,7 @@ export default function Footer() {
           <Column title="Navigimi">
             {navLinks.map((l) => (
               <li key={l.href}>
-                <a href={l.href} onClick={(e) => go(e, l.href)} className={link}>
+                <a href={resolveHref(l.href, path)} onClick={(e) => go(e, l.href)} className={link}>
                   {l.label}
                 </a>
               </li>

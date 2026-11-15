@@ -1,7 +1,7 @@
 // Ndihmës për linket e kontaktit (telefon, email, hartë).
 // Të gjitha komponentet i përdorin këto, që sjellja të jetë e njëjtë kudo.
 
-/** "+355 69 958 3595" → "tel:+355699583595" (hap dritaren e thirrjes në celular). */
+/** "+355 68 390 0044" → "tel:+355683900044" (hap dritaren e thirrjes në celular). */
 export const telHref = (phone) => `tel:${phone.replace(/[^\d+]/g, '')}`
 
 /**

@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight, ArrowUpRight, Check, CheckCircle2, ChevronDown, Clock, Copy, Mail, MapPin, Phone } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, CheckCircle2, ChevronDown, Clock, Mail, MapPin, Phone } from 'lucide-react'
 import SectionTitle from '../ui/SectionTitle'
 import MagneticButton from '../ui/MagneticButton'
+import CopyButton from '../ui/CopyButton'
+import Field from '../ui/Field'
 import { company } from '../../data/site'
 import { services } from '../../data/services'
 import { defaultMail, external, mailtoHref, mapsOpenUrl, telHref } from '../../data/contact'
@@ -361,82 +363,5 @@ export default function Contact() {
         </div>
       </div>
     </section>
-  )
-}
-
-/** Kopjon tekstin në clipboard — i dobishëm në desktop, ku tel:/mailto: shpesh s'kanë aplikacion. */
-function CopyButton({ value, label }) {
-  const [copied, setCopied] = useState(false)
-  const timer = useRef(null)
-  useEffect(() => () => clearTimeout(timer.current), [])
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(value)
-    } catch {
-      // Rezervë për shfletues të vjetër ose kontekste jo-HTTPS
-      const ta = document.createElement('textarea')
-      ta.value = value
-      ta.setAttribute('readonly', '')
-      ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none'
-      document.body.appendChild(ta)
-      ta.select()
-      document.execCommand('copy')
-      ta.remove()
-    }
-    setCopied(true)
-    clearTimeout(timer.current)
-    timer.current = setTimeout(() => setCopied(false), 1800)
-  }
-
-  return (
-    <motion.button
-      type="button"
-      onClick={copy}
-      whileTap={{ scale: 0.96 }}
-      aria-label={copied ? `${label} u kopjua` : `Kopjo ${label.toLowerCase()}`}
-      title={copied ? 'U kopjua' : 'Kopjo'}
-      className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden border border-accent/15 text-mist transition-colors duration-500 hover:border-gold hover:text-gold"
-    >
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.span
-          key={copied ? 'ok' : 'copy'}
-          initial={{ y: 12, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -12, opacity: 0 }}
-          transition={{ duration: 0.25, ease }}
-          className={copied ? 'text-gold' : ''}
-        >
-          {copied ? <Check size={16} strokeWidth={1.75} /> : <Copy size={16} strokeWidth={1.5} />}
-        </motion.span>
-      </AnimatePresence>
-      <span className="sr-only" aria-live="polite">
-        {copied ? 'U kopjua' : ''}
-      </span>
-    </motion.button>
-  )
-}
-
-function Field({ label, error, children, className = '' }) {
-  return (
-    <label className={`block ${className}`}>
-      <span className="text-xs uppercase tracking-[0.2em] text-mist">{label}</span>
-      {children}
-      {/* Hapësirë e rezervuar për gabimin — pa lëvizje layout-i */}
-      <span className="block h-6 pt-1.5 text-xs text-danger" aria-live="polite">
-        <AnimatePresence>
-          {error && (
-            <motion.span
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="block"
-            >
-              {error}
-            </motion.span>
-          )}
-        </AnimatePresence>
-      </span>
-    </label>
   )
 }

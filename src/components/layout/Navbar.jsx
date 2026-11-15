@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { company, navLinks } from '../../data/site'
-import { getLenis, scrollToTarget } from '../../hooks/useLenis'
+import { getLenis } from '../../hooks/useLenis'
+import { goTo, resolveHref, usePath } from '../../hooks/useRoute'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
 import { defaultMail, external, mailtoHref, mapsOpenUrl, telHref } from '../../data/contact'
 import Logo from '../ui/Logo'
@@ -10,10 +11,11 @@ import MagneticButton from '../ui/MagneticButton'
 
 const ease = [0.22, 1, 0.36, 1]
 
-/** Gjen seksionin që është aktualisht në mes të ekranit. */
-function useActiveSection(ids) {
+/** Gjen seksionin që është aktualisht në mes të ekranit (rinis vëzhgimin kur ndryshon faqja). */
+function useActiveSection(ids, path) {
   const [active, setActive] = useState(null)
   useEffect(() => {
+    setActive(null)
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => entry.isIntersecting && setActive(`#${entry.target.id}`))
@@ -25,11 +27,12 @@ function useActiveSection(ids) {
       if (el) observer.observe(el)
     })
     return () => observer.disconnect()
-  }, [ids])
+  }, [ids, path])
   return active
 }
 
-const sectionIds = navLinks.map((l) => l.href)
+const sectionIds = navLinks.filter((l) => l.href.startsWith('#')).map((l) => l.href)
+const desktopLinks = navLinks.filter((l) => l.desktop !== false)
 
 function lockScroll() {
   getLenis()?.stop()
@@ -45,7 +48,13 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [hidden, setHidden] = useState(false)
   const [open, setOpen] = useState(false)
-  const active = useActiveSection(sectionIds)
+  const path = usePath()
+  const activeSection = useActiveSection(sectionIds, path)
+  // Në faqet më vete (p.sh. /karriera) aktive është vetë faqja
+  const active = path === '/' ? activeSection : path
+  const onCareers = path === '/karriera'
+  // CTA-ja e shiritit: në faqen e karrierës çon te formulari i aplikimit
+  const cta = onCareers ? { label: 'Apliko tani', href: '#apliko' } : { label: 'Na kontaktoni', href: '#kontakt' }
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   useMotionValueEvent(scrollY, 'change', (y) => {
@@ -79,7 +88,7 @@ export default function Navbar() {
     // Lenis injoron scrollTo kur është i ndalur, ndaj e lëshojmë menjëherë
     // (pa pritur efektin e mbylljes së menusë) dhe pastaj lëvizim te seksioni.
     unlockScroll()
-    requestAnimationFrame(() => scrollToTarget(href))
+    requestAnimationFrame(() => goTo(href))
   }, [])
 
   const solid = scrolled || open
@@ -100,7 +109,7 @@ export default function Navbar() {
       >
         <nav className="container-site flex h-16 items-center justify-between gap-6 sm:h-20">
           <a
-            href="#top"
+            href="/"
             onClick={(e) => go(e, 0)}
             aria-label={`${company.name} — kreu`}
             className="relative z-10 shrink-0"
@@ -109,16 +118,16 @@ export default function Navbar() {
           </a>
 
           {/* Linqet desktop, vetëm nga 1024px, që të mos mbivendosen me logon në tablet */}
-          <ul className="hidden min-w-0 items-center gap-8 lg:flex xl:gap-12">
-            {navLinks.filter((l) => l.href !== '#kontakt').map((link) => {
+          <ul className="hidden min-w-0 items-center gap-5 lg:flex xl:gap-10 2xl:gap-12">
+            {desktopLinks.map((link) => {
               const isActive = active === link.href
               return (
                 <li key={link.href}>
                   <a
-                    href={link.href}
+                    href={resolveHref(link.href, path)}
                     onClick={(e) => go(e, link.href)}
                     aria-current={isActive ? 'true' : undefined}
-                    className={`group relative flex items-center gap-2 whitespace-nowrap py-2 text-[12px] font-medium uppercase tracking-[0.2em] transition-colors duration-500 ${
+                    className={`group relative flex items-center gap-2 whitespace-nowrap py-2 text-[12px] font-medium uppercase tracking-[0.14em] transition-colors duration-500 xl:tracking-[0.2em] ${
                       isActive ? 'text-accent-light' : 'text-mist hover:text-bone'
                     }`}
                   >
@@ -137,8 +146,8 @@ export default function Navbar() {
           </ul>
 
           <div className="hidden shrink-0 lg:block">
-            <MagneticButton variant="outline" href="#kontakt" onClick={(e) => go(e, '#kontakt')} className="!h-11 !px-7">
-              Na kontaktoni
+            <MagneticButton variant="outline" href={cta.href} onClick={(e) => go(e, cta.href)} className="!h-11 !px-7">
+              {cta.label}
             </MagneticButton>
           </div>
 
@@ -190,7 +199,7 @@ export default function Navbar() {
                   return (
                     <li key={link.href} className="overflow-hidden border-b border-accent/15">
                       <motion.a
-                        href={link.href}
+                        href={resolveHref(link.href, path)}
                         onClick={(e) => go(e, link.href)}
                         initial={{ y: '100%' }}
                         animate={{ y: '0%' }}
@@ -215,8 +224,8 @@ export default function Navbar() {
                 exit={{ opacity: 0, transition: { duration: 0.2 } }}
                 className="mt-10"
               >
-                <MagneticButton href="#kontakt" onClick={(e) => go(e, '#kontakt')} className="w-full">
-                  Na kontaktoni <ArrowRight size={16} />
+                <MagneticButton href={cta.href} onClick={(e) => go(e, cta.href)} className="w-full">
+                  {cta.label} <ArrowRight size={16} />
                 </MagneticButton>
               </motion.div>
 
