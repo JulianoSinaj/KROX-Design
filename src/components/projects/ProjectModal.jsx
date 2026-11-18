@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { CalendarDays, MapPin, Ruler, X } from 'lucide-react'
+import { CalendarDays, MapPin, X } from 'lucide-react'
 import MagneticButton from '../ui/MagneticButton'
 import FadeImage from '../ui/FadeImage'
 import { categoryLabel } from '../../data/projects'
@@ -23,11 +23,14 @@ export default function ProjectModal({ project, onClose }) {
     }
   }, [project, onClose])
 
+  // Foto e plotë pa prerje; kthehet te foto e kartës nëse mungon
+  const photo = project?.full ?? { src: project?.image, width: 4, height: 5 }
+
   return (
     <AnimatePresence>
       {project && (
         <motion.div
-          className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-8"
+          className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-6 lg:p-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -44,49 +47,57 @@ export default function ProjectModal({ project, onClose }) {
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 24, opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.8, ease }}
-            className="relative grid max-h-[90vh] max-h-[90dvh] w-full max-w-5xl overflow-y-auto border border-accent/20 bg-onyx md:grid-cols-5"
+            style={{ '--r': photo.width / photo.height }}
+            className="project-modal relative border border-accent/20 bg-onyx shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)]"
           >
-            <div className="relative aspect-[4/3] bg-ink md:col-span-3 md:aspect-auto md:min-h-[560px]">
+            {/* Foto e plotë — korniza ka formatin e saj, ndaj s'ka shirita as prerje */}
+            <div className="project-modal__media relative w-full shrink-0 overflow-hidden bg-ink">
               <FadeImage
-                src={project.image}
+                key={photo.src}
+                src={photo.src}
                 alt={project.title}
+                width={photo.width}
+                height={photo.height}
+                decoding="async"
                 wrapperClassName="absolute inset-0"
                 className="h-full w-full object-cover"
               />
             </div>
 
-            <div className="flex flex-col p-6 sm:p-8 md:col-span-2 md:p-12">
-              <p className="eyebrow">
-                {categoryLabel(project.category)} · {project.type}
-              </p>
-              <h3 className="mt-5 text-2xl font-medium leading-tight text-bone sm:text-3xl">{project.title}</h3>
-              <p className="mt-6 text-sm leading-relaxed text-mist">{project.description}</p>
+            {/* Detajet — poshtë fotos në ekrane të vogla, panel anësor nga lg */}
+            <div className="project-modal__panel">
+              <div className="project-modal__panel-inner flex flex-col p-6 sm:p-8 lg:px-8 lg:py-10">
+                <p className="eyebrow pr-12">
+                  {categoryLabel(project.category)} · {project.type}
+                </p>
+                <h3 className="mt-4 text-2xl font-medium leading-tight text-bone sm:text-3xl">{project.title}</h3>
+                <p className="mt-5 text-sm leading-relaxed text-mist">{project.description}</p>
 
-              <dl className="mt-10 divide-y divide-accent/15 border-y border-accent/15 text-sm">
-                {[
-                  { icon: MapPin, label: 'Vendndodhja', value: project.location },
-                  { icon: CalendarDays, label: 'Viti', value: project.year },
-                  { icon: Ruler, label: 'Sipërfaqja', value: project.area },
-                ].map(({ icon: Icon, label, value }) => (
-                  <div key={label} className="flex items-center justify-between py-4">
-                    <dt className="flex items-center gap-2 text-mist">
-                      <Icon size={14} className="text-accent" /> {label}
-                    </dt>
-                    <dd className="text-bone">{value}</dd>
-                  </div>
-                ))}
-              </dl>
+                <dl className="mt-8 divide-y divide-accent/15 border-y border-accent/15 text-sm">
+                  {[
+                    { icon: MapPin, label: 'Vendndodhja', value: project.location },
+                    { icon: CalendarDays, label: 'Viti', value: project.year },
+                  ].map(({ icon: Icon, label, value }) => (
+                    <div key={label} className="flex items-center justify-between gap-4 py-4">
+                      <dt className="flex items-center gap-2 text-mist">
+                        <Icon size={14} className="text-accent" /> {label}
+                      </dt>
+                      <dd className="text-right text-bone">{value}</dd>
+                    </div>
+                  ))}
+                </dl>
 
-              <div className="mt-auto pt-10">
-                <MagneticButton
-                  onClick={() => {
-                    onClose()
-                    setTimeout(() => scrollToTarget('#kontakt'), 400)
-                  }}
-                  className="w-full"
-                >
-                  Projekt i ngjashëm? Na shkruani
-                </MagneticButton>
+                <div className="mt-auto pt-8">
+                  <MagneticButton
+                    onClick={() => {
+                      onClose()
+                      setTimeout(() => scrollToTarget('#kontakt'), 400)
+                    }}
+                    className="w-full whitespace-nowrap !px-4 !text-[11px] !tracking-[0.12em]"
+                  >
+                    Projekt i ngjashëm? Na shkruani
+                  </MagneticButton>
+                </div>
               </div>
             </div>
 
@@ -95,7 +106,7 @@ export default function ProjectModal({ project, onClose }) {
               onClick={onClose}
               whileTap={{ scale: 0.92 }}
               aria-label="Mbyll"
-              className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full border border-accent/30 bg-ink/70 text-bone backdrop-blur transition-colors duration-500 hover:border-gold hover:text-gold"
+              className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-accent/30 bg-ink/70 text-bone backdrop-blur transition-colors duration-500 hover:border-gold hover:text-gold"
             >
               <X size={18} />
             </motion.button>

@@ -77,8 +77,6 @@ export default function ProjectCard({ project, index, tilt, onOpen, onFocus, lay
               <span>{project.location}</span>
               <span className="h-3 w-px bg-accent/30" />
               <span className="tabular-nums">{project.year}</span>
-              <span className="h-3 w-px bg-accent/30" />
-              <span className="tabular-nums">{project.area}</span>
             </p>
           </div>
           <span className="flex h-11 w-11 shrink-0 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-accent/30 text-accent transition-[background-color,border-color,color,transform] duration-700 ease-expo group-hover:rotate-45 group-hover:border-gold group-hover:bg-gold group-hover:text-ink">

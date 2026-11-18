@@ -102,6 +102,63 @@
   .field {
     @apply h-14 w-full rounded-none border-0 border-b border-accent/20 bg-transparent px-0 text-base font-normal text-bone transition-colors duration-500 placeholder:text-mist/50 focus:border-gold focus:outline-none focus:ring-0;
   }
+
+  /*
+   * Modali i projektit — korniza merr formatin e fotos (--r = gjerësi/lartësi),
+   * ndaj fotoja e mbush gjithmonë skaj më skaj: pa shirita anash, pa prerje.
+   *  < lg : foto sipër (sa më e madhe që lejon ekrani), detajet poshtë me scroll
+   *  ≥ lg : foto majtas + panel detajesh djathtas, me lartësi të barabartë
+   */
+  .project-modal {
+    --r: 1.333;
+    --pad: 0.75rem;
+    --vh: 100vh;
+    --avail-w: calc(100vw - 2 * var(--pad));
+    --avail-h: calc(var(--vh) - 2 * var(--pad));
+    display: flex;
+    flex-direction: column;
+    width: min(var(--avail-w), calc(var(--avail-h) * var(--r)));
+    max-height: var(--avail-h);
+    overflow-y: auto;
+  }
+  @supports (height: 100dvh) {
+    .project-modal {
+      --vh: 100dvh;
+    }
+  }
+  .project-modal__media {
+    aspect-ratio: var(--r);
+  }
+  @media (min-width: 640px) {
+    .project-modal {
+      --pad: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .project-modal {
+      --pad: 2rem;
+      --panel: clamp(22rem, 28vw, 26rem);
+      --img-h: min(var(--avail-h), calc((var(--avail-w) - var(--panel)) / var(--r)), 60rem);
+      --img-w: calc(var(--img-h) * var(--r));
+      display: grid;
+      grid-template-columns: var(--img-w) var(--panel);
+      width: calc(var(--img-w) + var(--panel));
+      max-height: none;
+      overflow: hidden;
+    }
+    .project-modal__media {
+      height: var(--img-h);
+    }
+    /* Paneli s'e zgjat dot modalin: lartësia vjen nga fotoja, teksti i tepërt bën scroll brenda */
+    .project-modal__panel {
+      position: relative;
+    }
+    .project-modal__panel-inner {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+    }
+  }
 }
 
 @layer utilities {
