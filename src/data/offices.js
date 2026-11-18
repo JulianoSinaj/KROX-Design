@@ -12,7 +12,7 @@ import {
  * seksioni "Zyrat" (karta, harta, statusi, numëruesi) përditësohet automatikisht.
  *
  * hours: orari javor, indeksi 0 = E Diel … 6 = E Shtunë.
- *        ['08:00', '18:00'] = hapur; null = mbyllur.
+ *        ['09:00', '17:00'] = hapur; null = mbyllur.
  */
 export const offices = [
   {
@@ -28,12 +28,12 @@ export const offices = [
     coords: { lat: 40.4661, lng: 19.4914 }, // TODO: koordinatat e sakta të zyrës
     hours: [
       null, // E Diel
-      ['08:00', '18:00'], // E Hënë
-      ['08:00', '18:00'], // E Martë
-      ['08:00', '18:00'], // E Mërkurë
-      ['08:00', '18:00'], // E Enjte
-      ['08:00', '18:00'], // E Premte
-      ['08:00', '18:00'], // E Shtunë
+      ['09:00', '17:00'], // E Hënë
+      ['09:00', '17:00'], // E Martë
+      ['09:00', '17:00'], // E Mërkurë
+      ['09:00', '17:00'], // E Enjte
+      ['09:00', '17:00'], // E Premte
+      ['09:00', '17:00'], // E Shtunë
     ],
   },
   // Shembull për një zyrë të re në të ardhmen:

@@ -1,20 +1,16 @@
 // Të dhënat e përgjithshme të kompanisë.
 // Burimi: Ekstrakti i Regjistrit Tregtar (QKB), datë 28/07/2026.
 
-/** Foto shembull (placeholder). Zëvendësojini me foto reale te /public/images. */
-export const placeholder = (seed, w = 1400, h = 1000) =>
-  `https://picsum.photos/seed/krox-${seed}/${w}/${h}`
-
 export const company = {
   name: 'KROX',          // emri tregtar
   legalName: 'KROX Shpk',       // emri ligjor
   founded: 2022,                // data e themelimit: 03/02/2022
   administrator: 'Kristi Sako',
-  phone: '+355 69 958 3595',
-  email: 'valeronshpk@gmail.com',
+  phone: '+355 68 390 0044',
+  email: 'kroxshpk@gmail.com',
   city: 'Vlorë',
   address: 'Vlorë, Shqipëri',
-  hours: 'E Hënë – E Shtunë · 08:00 – 18:00', // TODO: konfirmoni orarin real
+  hours: 'E Hënë – E Shtunë · 09:00 – 17:00',
   mapQuery: 'Vlorë, Shqipëri',
   socials: [
     { label: 'Instagram', href: 'https://www.instagram.com/kroxshpk/' },
@@ -22,12 +18,16 @@ export const company = {
   ],
 }
 
+// href me "#" = seksion në faqen kryesore · href me "/" = faqe më vete (p.sh. /karriera).
+// desktop: false → lidhja shfaqet vetëm në menunë mobile dhe në footer, jo në shiritin e sipërm.
 export const navLinks = [
   { label: 'Rreth nesh', href: '#rreth-nesh' },
   { label: 'Shërbimet', href: '#sherbimet' },
   { label: 'Projektet', href: '#projektet' },
   { label: 'Zyrat', href: '#zyrat' },
-  { label: 'Kontakt', href: '#kontakt' },
+  { label: 'Kontakt', href: '#kontakt', desktop: false },
+  { label: 'Pyetje të shpeshta', href: '#pyetje', desktop: false },
+  { label: 'Karriera', href: '/karriera' },
 ]
 
 export const yearsActive = new Date().getFullYear() - company.founded
