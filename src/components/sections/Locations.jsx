@@ -43,7 +43,7 @@ export default function Locations() {
     <section id="zyrat" className="section-pad relative border-t border-accent/10">
       <div className="container-site">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-          <SectionTitle index="04" label="Zyrat" title="Ku të na gjeni." />
+          <SectionTitle index="04" label="Zyrat" title="Ku të na gjeni" />
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

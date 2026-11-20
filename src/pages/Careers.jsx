@@ -82,7 +82,7 @@ function CareersHero() {
                   animate={{ y: '0%' }}
                   transition={{ duration: 1.1, ease, delay: 0.5 }}
                 >
-                  ekipin KROX.
+                  ekipin KROX
                 </motion.span>
               </span>
             </h1>
@@ -183,7 +183,7 @@ function Benefits() {
     <section className="section-pad relative">
       <div className="container-site">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-          <SectionTitle index="01" label="Pse KROX" title="Një vend pune ku siguria dhe cilësia vijnë të parat." className="max-w-3xl" />
+          <SectionTitle index="01" label="Pse KROX" title="Një vend pune ku siguria dhe cilësia vijnë të parat" className="max-w-3xl" />
           <motion.p {...fadeUp(0.2)} className="max-w-sm text-mist">
             Çdo vepër që ndërtojmë mban emrin e njerëzve që e realizojnë. Prandaj investojmë tek ata.
           </motion.p>
@@ -218,7 +218,7 @@ function Roles() {
     <section className="section-pad relative border-t border-accent/10">
       <div className="container-site">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-          <SectionTitle index="02" label="Profilet" title="Kë kërkojmë." />
+          <SectionTitle index="02" label="Profilet" title="Kë kërkojmë" />
           <motion.p {...fadeUp(0.2)} className="max-w-sm text-mist">
             Zgjidhni profilin që ju përshtatet — butoni "Apliko" hap email-in me subjektin të plotësuar.
           </motion.p>
@@ -280,7 +280,7 @@ function Process() {
   return (
     <section className="section-pad relative border-t border-accent/10">
       <div className="container-site">
-        <SectionTitle index="03" label="Procesi" title="Nga aplikimi te kantieri, në katër hapa." className="max-w-3xl" />
+        <SectionTitle index="03" label="Procesi" title="Nga aplikimi te kantieri, në katër hapa" className="max-w-3xl" />
 
         <ol className="mt-12 grid gap-10 sm:grid-cols-2 md:mt-20 lg:grid-cols-4 lg:gap-8">
           {steps.map((s, i) => (

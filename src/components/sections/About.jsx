@@ -72,7 +72,7 @@ export default function About() {
 
           {/* Teksti */}
           <div className="lg:col-span-7">
-            <SectionTitle index="01" label="Rreth nesh" title="Nga projekti te kolaudimi, me përgjegjësi dhe saktësi." />
+            <SectionTitle index="01" label="Rreth nesh" title="Nga projekti te kolaudimi, me përgjegjësi dhe saktësi" />
 
             <motion.div
               initial={{ opacity: 0, y: 24 }}

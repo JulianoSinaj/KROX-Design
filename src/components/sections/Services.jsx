@@ -202,7 +202,7 @@ export default function Services() {
 
       <div className="container-site relative">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-          <SectionTitle index="02" label="Shërbimet" title="Një partner për gjithë ciklin e veprës." className="max-w-2xl" />
+          <SectionTitle index="02" label="Shërbimet" title="Një partner për gjithë ciklin e veprës" className="max-w-2xl" />
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

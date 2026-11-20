@@ -113,7 +113,7 @@ export default function Contact() {
   return (
     <section id="kontakt" className="section-pad relative border-t border-accent/10">
       <div className="container-site">
-        <SectionTitle index="05" label="Kontakt" title="Le të ndërtojmë diçka së bashku." className="max-w-3xl" />
+        <SectionTitle index="05" label="Kontakt" title="Le të ndërtojmë diçka së bashku" className="max-w-3xl" />
 
         <div className="mt-12 grid gap-12 md:mt-20 md:gap-16 lg:grid-cols-12 lg:gap-12 xl:gap-24">
           {/* Informacioni + harta */}

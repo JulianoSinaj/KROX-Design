@@ -7,7 +7,7 @@ const ease = [0.22, 1, 0.36, 1]
 const lines = [
   { text: 'Nga ideja te zbatimi', accent: false },
   { text: 'me standardet', accent: false },
-  { text: 'më të larta.', accent: true },
+  { text: 'më të larta', accent: true },
 ]
 
 export default function Hero() {

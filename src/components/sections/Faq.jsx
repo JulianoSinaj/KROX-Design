@@ -21,7 +21,7 @@ export default function Faq() {
           {/* Titulli + kontakti i shpejtë */}
           <div className="min-w-0 lg:col-span-5">
             <div className="lg:sticky lg:top-32">
-              <SectionTitle index="06" label="Pyetje të shpeshta" title="Përgjigje të qarta, përpara se të nisim." />
+              <SectionTitle index="06" label="Pyetje të shpeshta" title="Përgjigje të qarta, përpara se të nisim" />
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -29,8 +29,7 @@ export default function Faq() {
                 transition={{ duration: 0.8, ease, delay: 0.2 }}
                 className="mt-8 max-w-md text-mist"
               >
-                Nuk e gjeni përgjigjen që kërkoni? Na telefononi ose na shkruani — ju përgjigjemi brenda orarit të
-                punës, {company.hours}.
+                Për pyetje të tjera, na kontaktoni.
               </motion.p>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

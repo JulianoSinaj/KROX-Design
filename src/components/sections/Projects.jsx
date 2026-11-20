@@ -120,7 +120,7 @@ export default function Projects() {
       <section id="projektet" className="section-pad relative overflow-hidden">
         <div className="container-site">
           <div className="flex flex-col justify-between gap-8 md:gap-12 lg:flex-row lg:items-end">
-            <SectionTitle index="03" label="Portofoli" title="Projekte që flasin vetë." />
+            <SectionTitle index="03" label="Portofoli" title="Projekte që flasin vetë" />
 
             {/* Mobile: dropdown */}
             <MobileFilter value={filter} onChange={selectFilter} />
