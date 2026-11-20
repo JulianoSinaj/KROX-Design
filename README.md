@@ -92,6 +92,13 @@ Faqja zyrtare e **KROX Shpk**: një website premium me temë luxury dark, animac
 - Butona **telefoni / email** (`tel:` & `mailto:`) dhe kopjim në clipboard me një klik.
 - **Footer modern** me watermark-un "KROX" në sfond, me efekt 3D të një flete vizatimi.
 
+### 🌍 Shumëgjuhëshe: Shqip · English · Italiano
+
+- Të gjitha tekstet e faqes (navigimi, seksionet, portofoli, formulari, footer-i, faqja e karrierës, email-et e parambushura) në **ALB** (bazë), **ENG** dhe **ITA**, me terminologji ndërtimi.
+- Përzgjedhës **ALB | ENG | ITA** në navbar, me gjuhën aktive në gold. Në 1024–1279px shfaqet si dropdown kompakt, në menunë mobile si tre butona të mëdhenj.
+- Gjuha ruhet te `localStorage` (`krox-lang`) dhe mbetet pas refresh-it. Ndërrohet menjëherë, pa ringarkim faqeje, dhe përditëson `<html lang>`, titullin e skedës dhe përshkrimin meta.
+- Nuk ka varësi të reja: një `LanguageContext` i lehtë. Çdo tekst që mungon në ENG/ITA shfaqet automatikisht në shqip.
+
 ---
 
 ## 🧰 Teknologjitë
@@ -152,12 +159,22 @@ KROX-Design/
 │   │       ├── Counter.jsx
 │   │       ├── FadeImage.jsx
 │   │       ├── SectionTitle.jsx
+│   │       ├── LanguageSwitcher.jsx # ALB | ENG | ITA (desktop, dropdown, mobile)
 │   │       └── Logo.jsx
-│   ├── data/                    # Përmbajtja e faqes (pa prekur komponentët)
+│   ├── context/
+│   │   └── LanguageContext.jsx  # Gjuha aktive + localStorage → useLanguage()
+│   ├── locales/                 # Të gjitha tekstet e faqes, një skedar për gjuhë
+│   │   ├── alb.js               # Shqip (gjuha bazë)
+│   │   ├── eng.js               # English
+│   │   ├── ita.js               # Italiano
+│   │   └── index.js             # Lista e gjuhëve + rikthimi te shqipja
+│   ├── data/                    # Struktura: id, ikona, foto, koordinata, të dhënat zyrtare
 │   │   ├── site.js              # Të dhënat e kompanisë, navigimi, statistikat
 │   │   ├── services.js
 │   │   ├── projects.js
 │   │   ├── offices.js
+│   │   ├── faq.js
+│   │   ├── careers.js
 │   │   └── contact.js           # Ndihmës për tel:, mailto:, Google Maps
 │   ├── hooks/
 │   │   ├── useLenis.js          # Smooth scroll global
@@ -225,14 +242,26 @@ Faqja hapet te **http://localhost:5173**.
 
 ## 📝 Përditësimi i përmbajtjes
 
-E gjithë përmbajtja ndodhet te `src/data/`, kështu që teksti, projektet dhe zyrat ndryshohen pa prekur komponentët:
+Përmbajtja ndryshohet pa prekur komponentët. **Tekstet** janë te `src/locales/`, një skedar për çdo gjuhë. **Struktura** (id, ikona, foto, koordinata, të dhënat zyrtare) është te `src/data/`:
 
 | Çfarë doni të ndryshoni | Skedari |
 |:--|:--|
-| Emri, telefoni, email-i, rrjetet sociale, statistikat | `src/data/site.js` |
-| Shërbimet | `src/data/services.js` |
-| Projektet e portofolit dhe kategoritë | `src/data/projects.js` |
-| Zyrat, adresat, koordinatat, orari | `src/data/offices.js` |
+| Çdo tekst i faqes (tituj, përshkrime, butona, pyetjet e shpeshta, etiketat) | `src/locales/alb.js` · `eng.js` · `ita.js` |
+| Emri, administratori, telefoni, email-i, rrjetet sociale, statistikat | `src/data/site.js` (nuk përkthehen) |
+| Rendi dhe ikonat e shërbimeve | `src/data/services.js` |
+| Projektet (foto, vendndodhja, viti, kategoria) | `src/data/projects.js` |
+| Zyrat, koordinatat, orari | `src/data/offices.js` |
+
+**Shtimi i një elementi të ri** (projekt, shërbim, pyetje, zyrë ose pozicion pune) bëhet në dy hapa:
+
+1. Shtoni objektin me një `id` të re te skedari përkatës në `src/data/`.
+2. Shtoni tekstet me të njëjtin `id` te `alb.js`, `eng.js` dhe `ita.js`. Për projektet, p.sh., te `projects.items`:
+
+   ```js
+   'emri-i-projektit': { type: 'Kompleks rezidencial', description: '…' },
+   ```
+
+Nëse një tekst mungon në `eng.js` ose `ita.js`, faqja shfaq versionin shqip në vend të një boshllëku. Kështu një projekt i ri mund të publikohet menjëherë dhe të përkthehet më vonë.
 
 > [!NOTE]
 > Disa imazhe të projekteve janë ende placeholder (`picsum.photos`). Për t'i zëvendësuar, vendosni fotot reale te `public/images/` dhe përditësoni `src/data/projects.js`.

@@ -12,6 +12,7 @@ import {
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import MagneticButton from '../ui/MagneticButton'
 import ProjectCard from './ProjectCard'
+import { useLanguage } from '../../context/LanguageContext'
 
 // Spring i vetëm për çdo lëvizje të shiritit (shigjeta, tastierë, trackpad, reset)
 const glide = { type: 'spring', stiffness: 110, damping: 24, mass: 0.7 }
@@ -24,6 +25,7 @@ const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
  * - kartat anohen lehtë në 3D sipas shpejtësisë së tërheqjes
  */
 export default function ProjectCarousel({ items, resetKey, onOpen }) {
+  const { t } = useLanguage()
   const viewportRef = useRef(null)
   const trackRef = useRef(null)
   const x = useMotionValue(0)
@@ -161,7 +163,7 @@ export default function ProjectCarousel({ items, resetKey, onOpen }) {
         tabIndex={0}
         role="region"
         aria-roledescription="carousel"
-        aria-label="Projektet — përdorni shigjetat ← → ose tërhiqni"
+        aria-label={t.projects.carouselLabel}
         onKeyDown={onKeyDown}
         onPointerMove={onPointerMove}
         onPointerLeave={() => setCursorOn(false)}
@@ -231,7 +233,7 @@ export default function ProjectCarousel({ items, resetKey, onOpen }) {
               className="-ml-11 -mt-11 flex h-[88px] w-[88px] items-center justify-center gap-1.5 rounded-full border border-gold/60 bg-ink/60 text-[10px] font-medium uppercase tracking-[0.2em] text-gold backdrop-blur-md"
             >
               <ArrowLeft size={11} />
-              Tërhiq
+              {t.projects.drag}
               <ArrowRight size={11} />
             </motion.div>
           </motion.div>
@@ -258,7 +260,7 @@ export default function ProjectCarousel({ items, resetKey, onOpen }) {
             variant="outline"
             onClick={() => step(-1)}
             disabled={!scrollable || edges.start}
-            aria-label="Projekti i mëparshëm"
+            aria-label={t.projects.prev}
             className="!h-14 !w-14 !px-0 disabled:pointer-events-none disabled:opacity-30"
           >
             <ArrowLeft size={18} />
@@ -267,7 +269,7 @@ export default function ProjectCarousel({ items, resetKey, onOpen }) {
             variant="outline"
             onClick={() => step(1)}
             disabled={!scrollable || edges.end}
-            aria-label="Projekti tjetër"
+            aria-label={t.projects.next}
             className="!h-14 !w-14 !px-0 disabled:pointer-events-none disabled:opacity-30"
           >
             <ArrowRight size={18} />

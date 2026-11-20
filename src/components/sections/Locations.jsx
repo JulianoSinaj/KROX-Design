@@ -8,11 +8,14 @@ import {
   mapsDirectionsUrl,
   mapsEmbedUrl,
   mapsOpenUrl,
+  officeAddress,
   officeStatus,
   offices,
   telHref,
 } from '../../data/offices'
-import { defaultMail, mailtoHref } from '../../data/contact'
+import { mailtoHref } from '../../data/contact'
+import { useLanguage } from '../../context/LanguageContext'
+import { localize } from '../../locales'
 
 const ease = [0.22, 1, 0.36, 1]
 
@@ -33,17 +36,22 @@ function useNow(interval = 60_000) {
 }
 
 export default function Locations() {
+  const { t } = useLanguage()
   const [activeId, setActiveId] = useState(offices[0].id)
   const now = useNow()
   const statuses = useMemo(() => Object.fromEntries(offices.map((o) => [o.id, officeStatus(o, now)])), [now])
-  const active = offices.find((o) => o.id === activeId) ?? offices[0]
-  const count = offices.length === 1 ? '1 zyrë' : `${offices.length} zyra`
+  // Etiketa ("Zyra qendrore"…) dhe adresa me emrin e shtetit në gjuhën aktive
+  const items = useMemo(
+    () => localize(offices, t.locations.offices).map((o) => ({ ...o, address: officeAddress(o, t.common.country) })),
+    [t],
+  )
+  const active = items.find((o) => o.id === activeId) ?? items[0]
 
   return (
     <section id="zyrat" className="section-pad relative border-t border-accent/10">
       <div className="container-site">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-          <SectionTitle index="04" label="Zyrat" title="Ku të na gjeni" />
+          <SectionTitle index="04" label={t.locations.label} title={t.locations.title} />
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -51,7 +59,7 @@ export default function Locations() {
             transition={{ duration: 0.8, ease, delay: 0.2 }}
             className="max-w-sm text-mist"
           >
-            Ju mirëpresim në zyrë për të diskutuar projektin tuaj. Për çdo pyetje, na shkruani në email.
+            {t.locations.intro}
           </motion.p>
         </div>
 
@@ -65,7 +73,7 @@ export default function Locations() {
               variants={list}
               className="space-y-4"
             >
-              {offices.map((o, i) => (
+              {items.map((o, i) => (
                 <OfficeCard
                   key={o.id}
                   office={o}
@@ -79,10 +87,10 @@ export default function Locations() {
 
             <div className="mt-8 flex flex-wrap gap-4 lg:mt-auto lg:pt-8">
               <MagneticButton href={mapsDirectionsUrl(active)} target="_blank" rel="noopener noreferrer">
-                <Navigation size={15} /> Udhëzime
+                <Navigation size={15} /> {t.locations.directions}
               </MagneticButton>
               <MagneticButton variant="outline" href={telHref(active.phone)}>
-                <Phone size={15} /> Telefono
+                <Phone size={15} /> {t.locations.call}
               </MagneticButton>
             </div>
           </div>
@@ -105,7 +113,7 @@ export default function Locations() {
                 transition={{ duration: 0.9, ease }}
               >
                 <iframe
-                  title={`Harta — ${active.name}`}
+                  title={t.locations.mapTitle(active.name)}
                   src={mapsEmbedUrl(active)}
                   className="h-full w-full [filter:grayscale(1)_invert(0.92)_contrast(0.9)]"
                   loading="lazy"
@@ -151,11 +159,11 @@ export default function Locations() {
               transition={{ duration: 0.4 }}
               className="tabular-nums"
             >
-              {formatCoords(active.coords)} — {active.city}, {active.country}
+              {formatCoords(active.coords)} — {active.city}, {t.common.country}
             </motion.p>
           </AnimatePresence>
           <p className="flex items-center gap-2">
-            <MapPin size={12} className="text-gold" /> {count} · një standard cilësie
+            <MapPin size={12} className="text-gold" /> {t.locations.count(items.length)} · {t.locations.standard}
           </p>
         </div>
       </div>
@@ -164,6 +172,7 @@ export default function Locations() {
 }
 
 function StatusChip({ open }) {
+  const { t } = useLanguage()
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] ${
@@ -171,12 +180,13 @@ function StatusChip({ open }) {
       }`}
     >
       <span className={`h-1.5 w-1.5 rounded-full ${open ? 'bg-gold' : 'bg-mist/60'}`} />
-      {open ? 'Hapur' : 'Mbyllur'}
+      {open ? t.locations.open : t.locations.closed}
     </span>
   )
 }
 
 function OfficeCard({ office, index, active, status, onSelect }) {
+  const { t } = useLanguage()
   const panelId = `zyra-${office.id}`
 
   return (
@@ -248,8 +258,10 @@ function OfficeCard({ office, index, active, status, onSelect }) {
               {status && (
                 <p className="flex items-center gap-3 text-bone/90">
                   <Clock size={15} className="shrink-0 text-accent" />
-                  Sot ({status.dayName}):
-                  <span className={status.open ? 'text-accent-light' : 'text-mist'}>{status.today}</span>
+                  {t.locations.today(t.common.days[status.day])}
+                  <span className={status.open ? 'text-accent-light' : 'text-mist'}>
+                    {status.hours ?? t.locations.closed}
+                  </span>
                 </p>
               )}
               <a
@@ -259,7 +271,7 @@ function OfficeCard({ office, index, active, status, onSelect }) {
                 <Phone size={15} className="shrink-0 text-accent" /> {office.phone}
               </a>
               <a
-                href={mailtoHref(office.email, defaultMail)}
+                href={mailtoHref(office.email, t.mail.default)}
                 className="flex items-center gap-3 text-bone/90 transition-colors duration-500 hover:text-gold"
               >
                 <Mail size={15} className="shrink-0 text-accent" /> {office.email}
@@ -272,7 +284,7 @@ function OfficeCard({ office, index, active, status, onSelect }) {
                   rel="noopener noreferrer"
                   className="!h-12 !px-7"
                 >
-                  Hap në Google Maps <ArrowUpRight size={15} />
+                  {t.locations.openInMaps} <ArrowUpRight size={15} />
                 </MagneticButton>
               </div>
             </div>

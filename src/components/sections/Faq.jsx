@@ -5,12 +5,16 @@ import SectionTitle from '../ui/SectionTitle'
 import MagneticButton from '../ui/MagneticButton'
 import { faqs } from '../../data/faq'
 import { company } from '../../data/site'
-import { defaultMail, mailtoHref, telHref } from '../../data/contact'
+import { mailtoHref, telHref } from '../../data/contact'
 import { goTo } from '../../hooks/useRoute'
+import { useLanguage } from '../../context/LanguageContext'
+import { localize } from '../../locales'
 
 const ease = [0.22, 1, 0.36, 1]
 
 export default function Faq() {
+  const { t } = useLanguage()
+  const items = localize(faqs, t.faq.items)
   // Një pyetje e hapur në një kohë; e para hapur si fillim
   const [open, setOpen] = useState(0)
 
@@ -21,7 +25,7 @@ export default function Faq() {
           {/* Titulli + kontakti i shpejtë */}
           <div className="min-w-0 lg:col-span-5">
             <div className="lg:sticky lg:top-32">
-              <SectionTitle index="06" label="Pyetje të shpeshta" title="Përgjigje të qarta, përpara se të nisim" />
+              <SectionTitle index="06" label={t.faq.label} title={t.faq.title} />
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -29,7 +33,7 @@ export default function Faq() {
                 transition={{ duration: 0.8, ease, delay: 0.2 }}
                 className="mt-8 max-w-md text-mist"
               >
-                Për pyetje të tjera, na kontaktoni.
+                {t.faq.intro}
               </motion.p>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -39,10 +43,10 @@ export default function Faq() {
                 className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4"
               >
                 <MagneticButton href={telHref(company.phone)} className="w-full sm:w-auto">
-                  <Phone size={15} /> Telefononi
+                  <Phone size={15} /> {t.faq.call}
                 </MagneticButton>
-                <MagneticButton variant="outline" href={mailtoHref(company.email, defaultMail)} className="w-full sm:w-auto">
-                  <Mail size={15} /> Na shkruani
+                <MagneticButton variant="outline" href={mailtoHref(company.email, t.mail.default)} className="w-full sm:w-auto">
+                  <Mail size={15} /> {t.faq.write}
                 </MagneticButton>
               </motion.div>
             </div>
@@ -56,8 +60,8 @@ export default function Faq() {
             transition={{ duration: 0.9, ease, delay: 0.1 }}
             className="min-w-0 divide-y divide-accent/15 border-y border-accent/15 lg:col-span-7"
           >
-            {faqs.map((item, i) => (
-              <FaqItem key={item.q} item={item} index={i} open={open === i} onToggle={() => setOpen(open === i ? -1 : i)} />
+            {items.map((item, i) => (
+              <FaqItem key={item.id} item={item} index={i} open={open === i} onToggle={() => setOpen(open === i ? -1 : i)} />
             ))}
           </motion.ul>
         </div>
@@ -126,16 +130,16 @@ function FaqItem({ item, index, open, onToggle }) {
           >
             <div className="pb-7 pl-14 pr-4 sm:pb-9 sm:pl-[4.75rem] sm:pr-16">
               <p className="max-w-2xl leading-relaxed text-mist">{item.a}</p>
-              {item.link && (
+              {item.href && item.link && (
                 <a
-                  href={item.link.href}
+                  href={item.href}
                   onClick={(e) => {
                     e.preventDefault()
-                    goTo(item.link.href)
+                    goTo(item.href)
                   }}
                   className="group/link mt-5 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-accent-light transition-colors duration-500 hover:text-gold"
                 >
-                  {item.link.label}
+                  {item.link}
                   <ArrowRight size={14} className="transition-transform duration-700 ease-expo group-hover/link:translate-x-1" />
                 </a>
               )}

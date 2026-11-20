@@ -4,6 +4,8 @@ import { Award, Clock, Eye, ShieldCheck } from 'lucide-react'
 import SectionTitle from '../ui/SectionTitle'
 import Counter from '../ui/Counter'
 import { company, stats, values } from '../../data/site'
+import { useLanguage } from '../../context/LanguageContext'
+import { localize } from '../../locales'
 
 const icons = { Award, Clock, Eye, ShieldCheck }
 const ease = [0.22, 1, 0.36, 1]
@@ -16,6 +18,8 @@ const aboutImg = {
 }
 
 export default function About() {
+  const { t } = useLanguage()
+  const valueItems = localize(values, t.about.values)
   const imgRef = useRef(null)
   const { scrollYProgress } = useScroll({ target: imgRef, offset: ['start end', 'end start'] })
   const p = useSpring(scrollYProgress, { stiffness: 100, damping: 30, mass: 0.4 })
@@ -40,7 +44,7 @@ export default function About() {
                   sizes="(min-width: 1024px) 40vw, 100vw"
                   width={1400}
                   height={1750}
-                  alt="Punëtorë në kantier mbi një soletë betonarmeje, mes armaturës së hekurit"
+                  alt={t.about.imageAlt}
                   loading="lazy"
                   decoding="async"
                   style={{ y: imgY, scale: 1.2 }}
@@ -62,17 +66,17 @@ export default function About() {
               style={{ y: badgeY }}
               className="absolute -bottom-8 -right-4 bg-gold p-6 text-ink shadow-card will-change-transform sm:-right-8 sm:p-8"
             >
-              <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-ink/70">Themeluar</p>
+              <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-ink/70">{t.about.founded}</p>
               <p className="mt-2 font-display text-5xl font-bold leading-none">
                 <Counter value={company.founded} />
               </p>
-              <p className="mt-2 text-xs font-medium uppercase tracking-[0.2em]">{company.address}</p>
+              <p className="mt-2 text-xs font-medium uppercase tracking-[0.2em]">{t.common.address}</p>
             </motion.div>
           </div>
 
           {/* Teksti */}
           <div className="lg:col-span-7">
-            <SectionTitle index="01" label="Rreth nesh" title="Nga projekti te kolaudimi, me përgjegjësi dhe saktësi" />
+            <SectionTitle index="01" label={t.about.label} title={t.about.title} />
 
             <motion.div
               initial={{ opacity: 0, y: 24 }}
@@ -82,23 +86,16 @@ export default function About() {
               className="mt-10 grid gap-6 text-base leading-relaxed text-mist md:grid-cols-2"
             >
               <p>
-                <span className="text-bone">KROX</span> ({company.legalName}) është shoqëri e
-                themeluar në {company.founded} me qendër në {company.city}. Ne mbulojmë gjithë ciklin e
-                një vepre: studimet gjeologo-inxhinierike dhe urbanistike, projektimin arkitektonik dhe
-                strukturor, zbatimin e punimeve dhe rikonstruksionet.
+                <span className="text-bone">{company.name}</span> {t.about.intro}
               </p>
-              <p>
-                Mbikëqyrja dhe kolaudimi i punimeve janë pjesë e shërbimit tonë, ndaj cilësia dhe
-                siguria në kantier kontrollohen në çdo fazë. Klienti ka një partner të vetëm dhe
-                përgjegjës nga ideja deri te dorëzimi.
-              </p>
+              <p>{t.about.body}</p>
             </motion.div>
 
             {/* Statistikat */}
             <div className="mt-10 grid grid-cols-3 border-l border-t border-accent/15 md:mt-14">
               {stats.map((s, i) => (
                 <motion.div
-                  key={s.label}
+                  key={s.id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: '-60px' }}
@@ -108,7 +105,7 @@ export default function About() {
                   <p className="font-display text-2xl font-medium text-bone min-[400px]:text-3xl md:text-4xl">
                     <Counter value={s.value} suffix={s.suffix} />
                   </p>
-                  <p className="mt-2 text-xs leading-snug text-mist">{s.label}</p>
+                  <p className="mt-2 text-xs leading-snug text-mist">{t.about.stats[s.id]}</p>
                 </motion.div>
               ))}
             </div>
@@ -117,11 +114,11 @@ export default function About() {
 
         {/* Vlerat */}
         <div className="mt-20 grid gap-px overflow-hidden md:mt-32 border border-accent/15 bg-accent/15 sm:grid-cols-2 lg:grid-cols-4">
-          {values.map((v, i) => {
+          {valueItems.map((v, i) => {
             const Icon = icons[v.icon]
             return (
               <motion.div
-                key={v.title}
+                key={v.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-60px' }}

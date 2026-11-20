@@ -3,12 +3,13 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { CalendarDays, MapPin, X } from 'lucide-react'
 import MagneticButton from '../ui/MagneticButton'
 import FadeImage from '../ui/FadeImage'
-import { categoryLabel } from '../../data/projects'
 import { getLenis, scrollToTarget } from '../../hooks/useLenis'
+import { useLanguage } from '../../context/LanguageContext'
 
 const ease = [0.22, 1, 0.36, 1]
 
 export default function ProjectModal({ project, onClose }) {
+  const { t } = useLanguage()
   useEffect(() => {
     if (!project) return
     const lenis = getLenis()
@@ -68,17 +69,17 @@ export default function ProjectModal({ project, onClose }) {
             <div className="project-modal__panel">
               <div className="project-modal__panel-inner flex flex-col p-6 sm:p-8 lg:px-8 lg:py-10">
                 <p className="eyebrow pr-12">
-                  {categoryLabel(project.category)} · {project.type}
+                  {t.projects.categories[project.category] ?? project.category} · {project.type}
                 </p>
                 <h3 className="mt-4 text-2xl font-medium leading-tight text-bone sm:text-3xl">{project.title}</h3>
                 <p className="mt-5 text-sm leading-relaxed text-mist">{project.description}</p>
 
                 <dl className="mt-8 divide-y divide-accent/15 border-y border-accent/15 text-sm">
                   {[
-                    { icon: MapPin, label: 'Vendndodhja', value: project.location },
-                    { icon: CalendarDays, label: 'Viti', value: project.year },
-                  ].map(({ icon: Icon, label, value }) => (
-                    <div key={label} className="flex items-center justify-between gap-4 py-4">
+                    { id: 'location', icon: MapPin, label: t.projects.location, value: project.location },
+                    { id: 'year', icon: CalendarDays, label: t.projects.year, value: project.year },
+                  ].map(({ id, icon: Icon, label, value }) => (
+                    <div key={id} className="flex items-center justify-between gap-4 py-4">
                       <dt className="flex items-center gap-2 text-mist">
                         <Icon size={14} className="text-accent" /> {label}
                       </dt>
@@ -95,7 +96,7 @@ export default function ProjectModal({ project, onClose }) {
                     }}
                     className="w-full whitespace-nowrap !px-4 !text-[11px] !tracking-[0.12em]"
                   >
-                    Projekt i ngjashëm? Na shkruani
+                    {t.projects.similar}
                   </MagneticButton>
                 </div>
               </div>
@@ -105,7 +106,7 @@ export default function ProjectModal({ project, onClose }) {
               type="button"
               onClick={onClose}
               whileTap={{ scale: 0.92 }}
-              aria-label="Mbyll"
+              aria-label={t.projects.close}
               className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-accent/30 bg-ink/70 text-bone backdrop-blur transition-colors duration-500 hover:border-gold hover:text-gold"
             >
               <X size={18} />

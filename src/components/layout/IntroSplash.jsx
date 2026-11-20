@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useIsPresent } from 'framer-motion'
+import { useLanguage } from '../../context/LanguageContext'
 
 const SEEN_KEY = 'krox-intro-seen'
 const VIDEO_SRC = '/Video/KROX-Logo.mp4'
@@ -56,6 +57,7 @@ export default function IntroSplash({ onFinish }) {
 }
 
 function Splash({ onFinish }) {
+  const { t } = useLanguage()
   // false gjatë zbehjes në dalje
   const isPresent = useIsPresent()
   const videoRef = useRef(null)
@@ -162,7 +164,7 @@ function Splash({ onFinish }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8, duration: 0.6 }}
       >
-        Skip Intro <span aria-hidden="true">→</span>
+        {t.intro.skip} <span aria-hidden="true">→</span>
       </motion.button>
     </motion.div>
   )

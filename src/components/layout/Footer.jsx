@@ -3,9 +3,10 @@ import { motion, useMotionTemplate, useReducedMotion, useScroll, useSpring, useT
 import { ArrowUp } from 'lucide-react'
 import { company, navLinks } from '../../data/site'
 import { services } from '../../data/services'
-import { defaultMail, external, mailtoHref, mapsOpenUrl, telHref } from '../../data/contact'
+import { external, mailtoHref, mapsOpenUrl, telHref } from '../../data/contact'
 import { scrollToTarget } from '../../hooks/useLenis'
 import { goTo, resolveHref, usePath } from '../../hooks/useRoute'
+import { useLanguage } from '../../context/LanguageContext'
 import Logo from '../ui/Logo'
 import MagneticButton from '../ui/MagneticButton'
 
@@ -21,6 +22,7 @@ function Column({ title, children }) {
 }
 
 export default function Footer() {
+  const { t } = useLanguage()
   const path = usePath()
   const go = (e, href) => {
     e.preventDefault()
@@ -77,10 +79,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-10 md:grid-cols-3 md:gap-y-14 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,0.9fr)_minmax(0,1.25fr)_minmax(0,0.8fr)] lg:gap-x-16">
           <div className="sm:col-span-2 md:col-span-3 lg:col-span-1">
             <Logo />
-            <p className="mt-6 max-w-sm text-sm leading-relaxed text-mist">
-              Projektim, zbatim punimesh ndërtimi, rikonstruksione, mbikëqyrje dhe kolaudim punimesh.
-              Me qendër në {company.city}, që nga {company.founded}.
-            </p>
+            <p className="mt-6 max-w-sm text-sm leading-relaxed text-mist">{t.footer.description}</p>
             <ul className="mt-8 space-y-1 text-sm">
               <li>
                 <a href={telHref(company.phone)} className={link}>
@@ -88,37 +87,37 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href={mailtoHref(company.email, defaultMail)} className={`${link} [overflow-wrap:anywhere]`}>
+                <a href={mailtoHref(company.email, t.mail.default)} className={`${link} [overflow-wrap:anywhere]`}>
                   {company.email}
                 </a>
               </li>
               <li>
                 <a href={mapsOpenUrl(company.mapQuery)} {...external} className={`${link} !text-mist hover:!text-gold`}>
-                  {company.address}
+                  {t.common.address}
                 </a>
               </li>
             </ul>
           </div>
 
-          <Column title="Navigimi">
+          <Column title={t.footer.navigation}>
             {navLinks.map((l) => (
               <li key={l.href}>
                 <a href={resolveHref(l.href, path)} onClick={(e) => go(e, l.href)} className={link}>
-                  {l.label}
+                  {t.nav.links[l.id]}
                 </a>
               </li>
             ))}
           </Column>
 
-          <Column title="Shërbimet">
+          <Column title={t.footer.services}>
             {services.map((s) => (
               <li key={s.id} className="py-1 text-bone/80">
-                {s.title}
+                {t.services.items[s.id]?.title}
               </li>
             ))}
           </Column>
 
-          <Column title="Na ndiqni">
+          <Column title={t.footer.follow}>
             {company.socials.map((s) => (
               <li key={s.label}>
                 <a
@@ -138,15 +137,15 @@ export default function Footer() {
         <div className="mt-20 flex flex-col items-start gap-6 border-t border-accent-light/15 pb-[max(2rem,env(safe-area-inset-bottom))] pt-8 sm:flex-row sm:items-center sm:justify-between sm:gap-10 md:mt-28 lg:mt-32">
           <p className="flex min-w-0 flex-col gap-2 text-xs leading-relaxed text-mist lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-4">
             <span>
-              © {new Date().getFullYear()} {company.legalName}. Të gjitha të drejtat e rezervuara.
+              © {new Date().getFullYear()} {company.legalName}. {t.footer.rights}
             </span>
             <span aria-hidden className="hidden h-3 w-px bg-accent-light/25 lg:block" />
             <span className="tracking-[0.14em] text-accent-light/70">
-              Administrator: {company.administrator} · {company.city}
+              {t.footer.administrator}: {company.administrator} · {company.city}
             </span>
           </p>
           <MagneticButton variant="gold" onClick={() => scrollToTarget(0)} className="!h-11 shrink-0 !px-6">
-            Kthehu lart <ArrowUp size={14} strokeWidth={1.75} />
+            {t.footer.backToTop} <ArrowUp size={14} strokeWidth={1.75} />
           </MagneticButton>
         </div>
       </div>

@@ -16,6 +16,8 @@ import TiltCard from '../ui/TiltCard'
 import { services } from '../../data/services'
 import { scrollToTarget } from '../../hooks/useLenis'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
+import { useLanguage } from '../../context/LanguageContext'
+import { localize } from '../../locales'
 
 const icons = { Calculator, ClipboardCheck, DraftingCompass, HardHat, Layers, PencilRuler }
 const ease = [0.22, 1, 0.36, 1]
@@ -27,6 +29,7 @@ const ease = [0.22, 1, 0.36, 1]
  * `group-data-[active=true]` → karta në qendër të karuselit merr gjendjen e hover-it.
  */
 function ServiceCard({ s, i, depth = false }) {
+  const { t } = useLanguage()
   const Icon = icons[s.icon]
   const z = (px) => (depth ? { transform: `translateZ(${px}px)` } : undefined)
 
@@ -65,7 +68,7 @@ function ServiceCard({ s, i, depth = false }) {
         className="mt-auto flex items-center gap-2 pt-8 text-xs font-medium uppercase tracking-[0.2em] text-bone"
         style={z(20)}
       >
-        Kërko ofertë
+        {t.services.cta}
         <ArrowUpRight
           size={16}
           className="text-gold transition-transform duration-500 ease-expo group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
@@ -76,11 +79,12 @@ function ServiceCard({ s, i, depth = false }) {
 }
 
 function NavArrow({ dir, disabled, onClick }) {
+  const { t } = useLanguage()
   const Icon = dir === 'prev' ? ArrowLeft : ArrowRight
   return (
     <motion.button
       type="button"
-      aria-label={dir === 'prev' ? 'Shërbimi i mëparshëm' : 'Shërbimi tjetër'}
+      aria-label={dir === 'prev' ? t.services.prev : t.services.next}
       onClick={onClick}
       disabled={disabled}
       whileTap={{ scale: 0.92 }}
@@ -92,10 +96,10 @@ function NavArrow({ dir, disabled, onClick }) {
 }
 
 /* Desktop / tablet (md+): rrjeti origjinal me TiltCard dhe hyrje 3D — i pandryshuar */
-function ServicesGrid() {
+function ServicesGrid({ items }) {
   return (
     <div className="mt-20 grid grid-cols-2 gap-6 lg:grid-cols-3 lg:gap-8">
-      {services.map((s, i) => (
+      {items.map((s, i) => (
         <motion.div
           key={s.id}
           initial={{ opacity: 0, y: 50, rotateX: -12 }}
@@ -118,7 +122,7 @@ function ServicesGrid() {
  * Kartat nuk kanë animacion individual (asnjë lëvizje lart-poshtë gjatë swipe);
  * vetëm i gjithë blloku hyn një herë kur shfaqet në ekran.
  */
-function ServicesCarousel() {
+function ServicesCarousel({ items }) {
   const trackRef = useRef(null)
   const [active, setActive] = useState(0)
 
@@ -158,11 +162,11 @@ function ServicesCarousel() {
         <span className="text-[11px] font-medium uppercase tracking-[0.2em] tabular-nums text-mist">
           <span className="text-gold">{String(active + 1).padStart(2, '0')}</span>
           <span className="mx-2 text-gold/30">/</span>
-          {String(services.length).padStart(2, '0')}
+          {String(items.length).padStart(2, '0')}
         </span>
         <div className="flex gap-2">
           <NavArrow dir="prev" disabled={active === 0} onClick={() => goTo(active - 1)} />
-          <NavArrow dir="next" disabled={active >= services.length - 1} onClick={() => goTo(active + 1)} />
+          <NavArrow dir="next" disabled={active >= items.length - 1} onClick={() => goTo(active + 1)} />
         </div>
       </div>
 
@@ -172,7 +176,7 @@ function ServicesCarousel() {
         className="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-[10vw] pb-2 [scrollbar-width:none] sm:-mx-8 [&::-webkit-scrollbar]:hidden"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
-        {services.map((s, i) => (
+        {items.map((s, i) => (
           <li key={s.id} data-active={i === active} className="group flex w-[80vw] shrink-0 snap-center">
             <ServiceCard s={s} i={i} />
           </li>
@@ -184,7 +188,7 @@ function ServicesCarousel() {
         <motion.div
           className="h-px origin-left bg-gold"
           initial={false}
-          animate={{ scaleX: (active + 1) / services.length }}
+          animate={{ scaleX: (active + 1) / items.length }}
           transition={{ type: 'spring', stiffness: 160, damping: 26 }}
           style={{ willChange: 'transform' }}
         />
@@ -194,6 +198,8 @@ function ServicesCarousel() {
 }
 
 export default function Services() {
+  const { t } = useLanguage()
+  const items = localize(services, t.services.items)
   const isGrid = useMediaQuery('(min-width: 768px)')
 
   return (
@@ -202,7 +208,7 @@ export default function Services() {
 
       <div className="container-site relative">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-          <SectionTitle index="02" label="Shërbimet" title="Një partner për gjithë ciklin e veprës" className="max-w-2xl" />
+          <SectionTitle index="02" label={t.services.label} title={t.services.title} className="max-w-2xl" />
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -210,12 +216,11 @@ export default function Services() {
             transition={{ duration: 0.8, ease, delay: 0.2 }}
             className="max-w-sm text-mist"
           >
-            Nga studimet gjeologjike dhe projektimi, te zbatimi, mbikëqyrja dhe kolaudimi i punimeve,
-            me një ekip të vetëm dhe përgjegjës.
+            {t.services.intro}
           </motion.p>
         </div>
 
-        {isGrid ? <ServicesGrid /> : <ServicesCarousel />}
+        {isGrid ? <ServicesGrid items={items} /> : <ServicesCarousel items={items} />}
       </div>
     </section>
   )

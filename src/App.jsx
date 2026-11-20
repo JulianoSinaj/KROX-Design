@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { MotionConfig } from 'framer-motion'
 import { getLenis, scrollToTarget, useLenis } from './hooks/useLenis'
 import { findTarget, usePath } from './hooks/useRoute'
+import { useLanguage } from './context/LanguageContext'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import IntroSplash from './components/layout/IntroSplash'
@@ -13,11 +14,6 @@ import Contact from './components/sections/Contact'
 import Locations from './components/sections/Locations'
 import Faq from './components/sections/Faq'
 import Careers from './pages/Careers'
-
-const titles = {
-  '/': 'KROX — Ndërtim & Zbatim Projektesh',
-  '/karriera': 'Karriera — Punoni me KROX',
-}
 
 function Home() {
   return (
@@ -37,7 +33,6 @@ function Home() {
 function useRouteScroll(path) {
   const first = useRef(true)
   useEffect(() => {
-    document.title = titles[path] ?? titles['/']
     const { hash } = window.location
     const isFirst = first.current
     first.current = false
@@ -55,10 +50,20 @@ function useRouteScroll(path) {
   }, [path])
 }
 
+/** Titulli i skedës dhe përshkrimi meta në gjuhën aktive (efekt më vete: ndërrimi i gjuhës nuk lëviz scroll-in). */
+function useDocumentMeta(path) {
+  const { t } = useLanguage()
+  useEffect(() => {
+    document.title = path === '/karriera' ? t.meta.titles.careers : t.meta.titles.home
+    document.querySelector('meta[name="description"]')?.setAttribute('content', t.meta.description)
+  }, [path, t])
+}
+
 export default function App() {
   useLenis()
   const path = usePath()
   useRouteScroll(path)
+  useDocumentMeta(path)
   // Ndryshon kur mbaron intro: faqja rimontohet që animacionet e hyrjes të luajnë pikërisht kur zbulohet
   const [introDone, setIntroDone] = useState(false)
   const handleIntroFinish = useCallback(() => setIntroDone(true), [])

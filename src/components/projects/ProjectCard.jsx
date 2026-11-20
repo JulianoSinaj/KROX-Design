@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import FadeImage from '../ui/FadeImage'
-import { categoryLabel } from '../../data/projects'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const cardVariants = {
   hidden: { opacity: 0, x: 80 },
@@ -21,8 +21,10 @@ export const gridCardVariants = {
  * foto bardh e zi → ngjyrë e plotë + zoom i butë në hover.
  * `tilt` është një motion value (rrotullim 3D sipas shpejtësisë së tërheqjes).
  * `layout="grid"` → kartë me gjerësi 100% për rrjetin vertikal në mobile.
+ * `project` vjen i përkthyer nga Projects (type, description në gjuhën aktive).
  */
 export default function ProjectCard({ project, index, tilt, onOpen, onFocus, layout = 'carousel', highlight = false }) {
+  const { t } = useLanguage()
   const isGrid = layout === 'grid'
   return (
     <motion.div
@@ -41,7 +43,7 @@ export default function ProjectCard({ project, index, tilt, onOpen, onFocus, lay
         onFocus={onFocus}
         data-highlight={highlight}
         draggable={false}
-        aria-label={`Shiko detajet: ${project.title}`}
+        aria-label={t.projects.viewDetails(project.title)}
         className="group block w-full select-none border border-accent/20 bg-onyx p-3 text-left transition-[border-color,box-shadow] duration-700 ease-silk hover:border-gold/60 hover:shadow-card"
       >
         {/* Foto */}
@@ -59,7 +61,7 @@ export default function ProjectCard({ project, index, tilt, onOpen, onFocus, lay
           <span className="pointer-events-none absolute inset-3 border border-gold/0 transition-colors duration-1000 ease-silk group-hover:border-gold/30 group-data-[highlight=true]:border-gold/30" />
 
           <span className="absolute left-4 top-4 border sm:left-5 sm:top-5 border-accent/30 bg-onyx/60 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] text-accent-light backdrop-blur-md">
-            {categoryLabel(project.category)}
+            {t.projects.categories[project.category] ?? project.category}
           </span>
           <span className="absolute right-4 top-4 font-display sm:right-5 sm:top-5 text-sm tabular-nums text-bone/70">
             {String(index + 1).padStart(2, '0')}

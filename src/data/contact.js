@@ -16,11 +16,7 @@ export function mailtoHref(email, { subject, body } = {}) {
   return `mailto:${email}${params.length ? `?${params.join('&')}` : ''}`
 }
 
-/** Subjekti dhe teksti standard kur vizitori klikon mbi email-in e kompanisë. */
-export const defaultMail = {
-  subject: 'Kërkesë informacioni — KROX',
-  body: 'Përshëndetje KROX,\n\nDëshiroj të marr më shumë informacion mbi…\n\nFaleminderit,\n',
-}
+// Subjekti dhe teksti standard i email-it (në gjuhën aktive): locales/*.js → mail.default
 
 // URL-të universale të Google Maps: në celular hapin aplikacionin Google Maps
 // (nëse është i instaluar), në desktop hapin maps.google.com.

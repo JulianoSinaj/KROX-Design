@@ -1,16 +1,14 @@
 import { useRef } from 'react'
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 import FadeImage from '../ui/FadeImage'
+import { useLanguage } from '../../context/LanguageContext'
 
 const ease = [0.22, 1, 0.36, 1]
 
-const lines = [
-  { text: 'Nga ideja te zbatimi', accent: false },
-  { text: 'me standardet', accent: false },
-  { text: 'më të larta', accent: true },
-]
-
 export default function Hero() {
+  const { t } = useLanguage()
+  // Rreshti i fundit i titullit merr gradientin gold
+  const lines = t.hero.title.map((text, i, all) => ({ text, accent: i === all.length - 1 }))
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   // Spring i butë mbi progresin e scroll-it — parallax pa kërcime
@@ -73,7 +71,7 @@ export default function Hero() {
             className="eyebrow mb-6 flex items-center gap-3 !tracking-[0.22em] sm:mb-10 sm:gap-4 sm:!tracking-eyebrow"
           >
             <span className="h-px w-8 shrink-0 bg-gold sm:w-12" />
-            <span className="min-w-0">Projektim · Zbatim · Mbikëqyrje</span>
+            <span className="min-w-0">{t.hero.eyebrow}</span>
           </motion.p>
 
           {/* Mobile → tablet → desktop. Nga lg e tutje mbetet madhësia origjinale fluide (clamp). */}
@@ -103,8 +101,7 @@ export default function Hero() {
             transition={{ duration: 1.1, ease, delay: 1.05 }}
             className="mt-6 max-w-xl text-[15px] leading-relaxed text-bone/70 sm:mt-10 sm:text-base md:text-lg"
           >
-            KROX projekton, zbaton dhe mbikëqyr punime ndërtimi me cilësi, saktësi dhe siguri
-            maksimale në kantier, nga studimi i parë deri te kolaudimi.
+            {t.hero.lead}
           </motion.p>
         </motion.div>
       </div>

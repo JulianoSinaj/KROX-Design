@@ -5,10 +5,12 @@ import { company, navLinks } from '../../data/site'
 import { getLenis } from '../../hooks/useLenis'
 import { goTo, resolveHref, usePath } from '../../hooks/useRoute'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
+import { useLanguage } from '../../context/LanguageContext'
 import { applyHref } from '../../data/careers'
-import { defaultMail, external, mailtoHref, mapsOpenUrl, telHref } from '../../data/contact'
+import { external, mailtoHref, mapsOpenUrl, telHref } from '../../data/contact'
 import Logo from '../ui/Logo'
 import MagneticButton from '../ui/MagneticButton'
+import LanguageSwitcher from '../ui/LanguageSwitcher'
 
 const ease = [0.22, 1, 0.36, 1]
 
@@ -45,6 +47,7 @@ function unlockScroll() {
 }
 
 export default function Navbar() {
+  const { t } = useLanguage()
   const { scrollY } = useScroll()
   const [scrolled, setScrolled] = useState(false)
   const [hidden, setHidden] = useState(false)
@@ -54,7 +57,7 @@ export default function Navbar() {
   // Në faqet më vete (p.sh. /karriera) aktive është vetë faqja
   const active = path === '/' ? activeSection : path
   const onCareers = path === '/karriera'
-  const cta = onCareers ? { label: 'Dërgo CV-në', href: applyHref() } : { label: 'Na kontaktoni', href: '#kontakt' }
+  const cta = onCareers ? { label: t.nav.sendCv, href: applyHref(t) } : { label: t.nav.cta, href: '#kontakt' }
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   useMotionValueEvent(scrollY, 'change', (y) => {
@@ -115,14 +118,15 @@ export default function Navbar() {
           <a
             href="/"
             onClick={(e) => go(e, 0)}
-            aria-label={`${company.name} — kreu`}
+            aria-label={t.nav.home}
             className="relative z-10 shrink-0"
           >
             <Logo />
           </a>
 
-          {/* Linqet desktop, vetëm nga 1024px, që të mos mbivendosen me logon në tablet */}
-          <ul className="hidden min-w-0 items-center gap-5 lg:flex xl:gap-10 2xl:gap-12">
+          {/* Linqet desktop, vetëm nga 1024px, që të mos mbivendosen me logon në tablet.
+              1024–1279px: tipografi pak më e ngjeshur, që linqet shqip + gjuha + CTA të nxënë pa u mbivendosur. */}
+          <ul className="hidden min-w-0 items-center gap-4 lg:flex xl:gap-8 2xl:gap-12">
             {desktopLinks.map((link) => {
               const isActive = active === link.href
               return (
@@ -131,7 +135,7 @@ export default function Navbar() {
                     href={resolveHref(link.href, path)}
                     onClick={(e) => go(e, link.href)}
                     aria-current={isActive ? 'true' : undefined}
-                    className={`group relative flex items-center gap-2 whitespace-nowrap py-2 text-[12px] font-medium uppercase tracking-[0.14em] transition-colors duration-500 xl:tracking-[0.2em] ${
+                    className={`group relative flex items-center gap-2 whitespace-nowrap py-2 text-[11px] font-medium uppercase tracking-[0.12em] transition-colors duration-500 xl:text-[12px] xl:tracking-[0.2em] ${
                       isActive ? 'text-accent-light' : 'text-mist hover:text-bone'
                     }`}
                   >
@@ -141,7 +145,7 @@ export default function Navbar() {
                         isActive ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
                       }`}
                     />
-                    {link.label}
+                    {t.nav.links[link.id]}
                     <span className="absolute -bottom-0.5 left-0 h-px w-full origin-right scale-x-0 bg-gradient-to-r from-gold to-accent transition-transform duration-700 ease-expo group-hover:origin-left group-hover:scale-x-100" />
                   </a>
                 </li>
@@ -149,8 +153,16 @@ export default function Navbar() {
             })}
           </ul>
 
-          <div className="hidden shrink-0 lg:block">
-            <MagneticButton variant="outline" href={cta.href} onClick={onCtaClick} className="!h-11 !px-7">
+          {/* Djathtas në desktop: gjuha + CTA. Në 1024–1279px linqet zënë vend → gjuha si dropdown kompakt. */}
+          <div className="hidden shrink-0 items-center gap-3 lg:flex xl:gap-5">
+            <div className="xl:hidden">
+              <LanguageSwitcher variant="dropdown" />
+            </div>
+            <div className="hidden xl:block">
+              <LanguageSwitcher variant="bar" />
+            </div>
+            <span aria-hidden className="hidden h-5 w-px bg-accent/15 xl:block" />
+            <MagneticButton variant="outline" href={cta.href} onClick={onCtaClick} className="!h-11 !px-5 xl:!px-7">
               {cta.label}
             </MagneticButton>
           </div>
@@ -160,7 +172,7 @@ export default function Navbar() {
             type="button"
             onClick={() => setOpen((o) => !o)}
             whileTap={{ scale: 0.96 }}
-            aria-label={open ? 'Mbyll menunë' : 'Hap menunë'}
+            aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
             aria-expanded={open}
             aria-controls="menu-mobile"
             className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-accent/30 transition-colors duration-500 hover:border-gold lg:hidden"
@@ -186,7 +198,7 @@ export default function Navbar() {
             id="menu-mobile"
             role="dialog"
             aria-modal="true"
-            aria-label="Menuja"
+            aria-label={t.nav.menu}
             data-lenis-prevent
             initial={{ clipPath: 'inset(0 0 100% 0)' }}
             animate={{ clipPath: 'inset(0 0 0% 0)' }}
@@ -215,7 +227,7 @@ export default function Navbar() {
                         }`}
                       >
                         <span className="w-6 shrink-0 text-xs tabular-nums text-gold">0{i + 1}</span>
-                        <span className="min-w-0 break-words">{link.label}</span>
+                        <span className="min-w-0 break-words">{t.nav.links[link.id]}</span>
                       </motion.a>
                     </li>
                   )
@@ -233,18 +245,29 @@ export default function Navbar() {
                 </MagneticButton>
               </motion.div>
 
+              {/* Gjuha — mbetet e hapur menuja, që ndryshimi të shihet menjëherë */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0, transition: { duration: 0.6, ease, delay: 0.5 } }}
+                exit={{ opacity: 0, transition: { duration: 0.2 } }}
+                className="mt-8"
+              >
+                <p className="eyebrow mb-3">{t.nav.language}</p>
+                <LanguageSwitcher variant="menu" />
+              </motion.div>
+
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1, transition: { delay: 0.55 } }}
                 exit={{ opacity: 0, transition: { duration: 0.2 } }}
                 className="mt-auto space-y-1 pt-10 text-sm text-mist"
               >
-                <p className="eyebrow mb-3">Kontakt</p>
+                <p className="eyebrow mb-3">{t.nav.contact}</p>
                 <a href={telHref(company.phone)} className="block py-2 transition-colors duration-500 hover:text-gold">
                   {company.phone}
                 </a>
                 <a
-                  href={mailtoHref(company.email, defaultMail)}
+                  href={mailtoHref(company.email, t.mail.default)}
                   className="block break-all py-2 transition-colors duration-500 hover:text-gold"
                 >
                   {company.email}
@@ -254,7 +277,7 @@ export default function Navbar() {
                   {...external}
                   className="block py-2 transition-colors duration-500 hover:text-gold"
                 >
-                  {company.address}
+                  {t.common.address}
                 </a>
               </motion.div>
             </div>

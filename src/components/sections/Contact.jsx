@@ -7,8 +7,9 @@ import CopyButton from '../ui/CopyButton'
 import Field from '../ui/Field'
 import { company } from '../../data/site'
 import { services } from '../../data/services'
-import { defaultMail, external, mailtoHref, mapsOpenUrl, telHref } from '../../data/contact'
+import { external, mailtoHref, mapsOpenUrl, telHref } from '../../data/contact'
 import { scrollToTarget } from '../../hooks/useLenis'
+import { useLanguage } from '../../context/LanguageContext'
 
 const ease = [0.22, 1, 0.36, 1]
 const initial = { name: '', email: '', phone: '', service: '', message: '' }
@@ -21,30 +22,34 @@ const MESSAGE_MAX = 1500 // mailto ka kufi gjatësie në disa klientë
  */
 const ENDPOINT = import.meta.env.VITE_CONTACT_ENDPOINT
 
+/** Kthen fushat me gabim ({ email: true, … }); mesazhi shfaqet në gjuhën aktive (t.contact.errors). */
 function validate(v) {
   const e = {}
-  if (!v.name.trim()) e.name = 'Ju lutem shkruani emrin.'
-  if (!/^\S+@\S+\.\S+$/.test(v.email.trim())) e.email = 'Email-i nuk është i vlefshëm.'
-  if (v.phone.trim() && !/^\+?[\d\s()-]{6,20}$/.test(v.phone.trim())) e.phone = 'Numri i telefonit nuk është i vlefshëm.'
-  if (v.message.trim().length < 10) e.message = 'Mesazhi duhet të ketë të paktën 10 karaktere.'
+  if (!v.name.trim()) e.name = true
+  if (!/^\S+@\S+\.\S+$/.test(v.email.trim())) e.email = true
+  if (v.phone.trim() && !/^\+?[\d\s()-]{6,20}$/.test(v.phone.trim())) e.phone = true
+  if (v.message.trim().length < 10) e.message = true
   return e
 }
 
-/** Ndërton subjektin dhe tekstin e email-it nga fushat e formularit. */
-function composeMail(v) {
-  const service = services.find((s) => s.id === v.service)?.title
-  const subject = `Kërkesë nga faqja${service ? ` — ${service}` : ''} · ${v.name.trim()}`
+/** Ndërton subjektin dhe tekstin e email-it nga fushat e formularit, në gjuhën aktive. */
+function composeMail(v, t) {
+  const m = t.mail.request
+  const service = t.services.items[v.service]?.title
+  const subject = m.subject(v.name.trim(), service)
   const details = [
-    `Emri: ${v.name.trim()}`,
-    `Email: ${v.email.trim()}`,
-    v.phone.trim() && `Telefoni: ${v.phone.trim()}`,
-    service && `Shërbimi: ${service}`,
+    `${m.name}: ${v.name.trim()}`,
+    `${m.email}: ${v.email.trim()}`,
+    v.phone.trim() && `${m.phone}: ${v.phone.trim()}`,
+    service && `${m.service}: ${service}`,
   ].filter(Boolean)
   const body = `${details.join('\n')}\n\n${v.message.trim()}`
   return { subject, body, service }
 }
 
 export default function Contact() {
+  const { t } = useLanguage()
+  const c = t.contact
   const [values, setValues] = useState(initial)
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle') // idle | sending | sent | mail | error
@@ -53,6 +58,7 @@ export default function Contact() {
     setValues((v) => ({ ...v, [key]: e.target.value }))
     if (errors[key]) setErrors((er) => ({ ...er, [key]: undefined }))
   }
+  const errorFor = (key) => (errors[key] ? c.errors[key] : undefined)
 
   const openMailClient = (mail) => {
     window.location.href = mailtoHref(company.email, mail)
@@ -65,7 +71,7 @@ export default function Contact() {
     setErrors(found)
     if (Object.keys(found).length) return
 
-    const mail = composeMail(values)
+    const mail = composeMail(values, t)
 
     // Pa backend → hapet aplikacioni i email-it me gjithçka gati për t'u dërguar
     if (!ENDPOINT) {
@@ -97,29 +103,29 @@ export default function Contact() {
   }
 
   const contactItems = [
-    { icon: Phone, label: 'Telefon', value: company.phone, href: telHref(company.phone), copy: company.phone },
-    { icon: Mail, label: 'Email', value: company.email, href: mailtoHref(company.email, defaultMail), copy: company.email },
-    { icon: MapPin, label: 'Zyra qendrore', value: company.address, href: mapsOpenUrl(company.mapQuery), external: true },
-    { icon: Clock, label: 'Orari', value: company.hours },
+    { id: 'phone', icon: Phone, label: c.items.phone, value: company.phone, href: telHref(company.phone), copy: company.phone },
+    { id: 'email', icon: Mail, label: c.items.email, value: company.email, href: mailtoHref(company.email, t.mail.default), copy: company.email },
+    { id: 'office', icon: MapPin, label: c.items.office, value: t.common.address, href: mapsOpenUrl(company.mapQuery), external: true },
+    { id: 'hours', icon: Clock, label: c.items.hours, value: t.common.hours },
   ]
 
-  // Të dhënat zyrtare nga Ekstrakti i QKB-së
+  // Të dhënat zyrtare nga Ekstrakti i QKB-së — vlerat nuk përkthehen, vetëm etiketat
   const legal = [
-    { label: 'Emri ligjor', value: company.legalName },
-    { label: 'Emri tregtar', value: company.name },
-    { label: 'Administrator', value: company.administrator },
+    { id: 'legalName', label: c.legal.legalName, value: company.legalName },
+    { id: 'tradeName', label: c.legal.tradeName, value: company.name },
+    { id: 'administrator', label: c.legal.administrator, value: company.administrator },
   ]
 
   return (
     <section id="kontakt" className="section-pad relative border-t border-accent/10">
       <div className="container-site">
-        <SectionTitle index="05" label="Kontakt" title="Le të ndërtojmë diçka së bashku" className="max-w-3xl" />
+        <SectionTitle index="05" label={c.label} title={c.title} className="max-w-3xl" />
 
         <div className="mt-12 grid gap-12 md:mt-20 md:gap-16 lg:grid-cols-12 lg:gap-12 xl:gap-24">
           {/* Informacioni + harta */}
           <div className="min-w-0 lg:col-span-5">
             <ul className="divide-y divide-accent/15 border-y border-accent/15">
-              {contactItems.map(({ icon: Icon, label, value, href, copy, external: isExternal }, i) => {
+              {contactItems.map(({ id, icon: Icon, label, value, href, copy, external: isExternal }, i) => {
                 const content = (
                   <>
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-accent/15 text-accent transition-colors duration-500 group-hover:bg-accent group-hover:text-ink">
@@ -142,7 +148,7 @@ export default function Contact() {
                 )
                 return (
                   <motion.li
-                    key={label}
+                    key={id}
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
@@ -153,7 +159,7 @@ export default function Contact() {
                       <a
                         href={href}
                         {...(isExternal ? external : {})}
-                        aria-label={isExternal ? `${value} — hap në Google Maps` : undefined}
+                        aria-label={isExternal ? c.openInMaps(value) : undefined}
                         className="group flex min-h-[72px] min-w-0 flex-1 items-center gap-4 py-4 sm:gap-5 sm:py-5"
                       >
                         {content}
@@ -177,12 +183,12 @@ export default function Contact() {
             >
               <span className="absolute left-0 top-0 h-6 w-6 border-l border-t border-gold/70" />
               <span className="absolute bottom-0 right-0 h-6 w-6 border-b border-r border-gold/70" />
-              <p className="eyebrow">Të dhënat e shoqërisë</p>
+              <p className="eyebrow">{c.companyDetails}</p>
               {/* Mobile: etiketa sipër, vlera poshtë. Nga 640px: në një rresht. */}
               <dl className="mt-5 divide-y divide-accent/10 text-sm">
-                {legal.map(({ label, value }) => (
+                {legal.map(({ id, label, value }) => (
                   <div
-                    key={label}
+                    key={id}
                     className="flex flex-col gap-1 py-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
                   >
                     <dt className="text-[11px] uppercase tracking-[0.18em] text-mist sm:text-xs">{label}</dt>
@@ -205,7 +211,7 @@ export default function Contact() {
               }}
               className="group mt-8 flex items-center justify-between border-b border-accent/15 pb-4 text-xs font-medium uppercase tracking-[0.2em] text-bone transition-colors duration-500 hover:text-gold"
             >
-              Shiko zyrat në hartë
+              {c.viewMap}
               <ArrowRight size={16} className="text-accent transition-transform duration-700 ease-expo group-hover:translate-x-1" />
             </a>
           </div>
@@ -236,29 +242,26 @@ export default function Contact() {
                       <CheckCircle2 size={48} strokeWidth={1.25} className="text-accent" />
                     )}
                     <h3 className="mt-6 font-display text-2xl font-medium text-bone sm:text-3xl">
-                      {status === 'sent' && 'Faleminderit!'}
-                      {status === 'mail' && 'Mesazhi është gati.'}
-                      {status === 'error' && 'Mesazhi nuk u dërgua.'}
+                      {status === 'sent' && c.status.sentTitle}
+                      {status === 'mail' && c.status.mailTitle}
+                      {status === 'error' && c.status.errorTitle}
                     </h3>
                     <p className="mt-3 max-w-md text-mist">
-                      {status === 'sent' &&
-                        "Mesazhi juaj u dërgua me sukses. Një nga inxhinierët tanë do t'ju kontaktojë brenda 24 orëve."}
-                      {status === 'mail' &&
-                        'U hap aplikacioni juaj i email-it me mesazhin të plotësuar. Shtypni "Dërgo" për ta nisur.'}
-                      {status === 'error' &&
-                        'Ndodhi një problem me lidhjen. Mund ta dërgoni të njëjtin mesazh nga aplikacioni juaj i email-it.'}
+                      {status === 'sent' && c.status.sentText}
+                      {status === 'mail' && c.status.mailText}
+                      {status === 'error' && c.status.errorText}
                     </p>
                     {status !== 'sent' && (
                       <p className="mt-4 max-w-md text-sm text-mist">
-                        {status === 'mail' && 'Nuk u hap asgjë? Na shkruani direkt në '}
-                        {status === 'error' && 'Ose na shkruani direkt në '}
+                        {status === 'mail' && c.status.mailFallback}
+                        {status === 'error' && c.status.errorFallback}
                         <a
-                          href={mailtoHref(company.email, composeMail(values))}
+                          href={mailtoHref(company.email, composeMail(values, t))}
                           className="break-all text-accent-light underline decoration-accent/40 underline-offset-4 transition-colors duration-500 hover:text-gold"
                         >
                           {company.email}
                         </a>{' '}
-                        ose na telefononi në{' '}
+                        {c.status.orCall}{' '}
                         <a
                           href={telHref(company.phone)}
                           className="whitespace-nowrap text-accent-light underline decoration-accent/40 underline-offset-4 transition-colors duration-500 hover:text-gold"
@@ -270,8 +273,8 @@ export default function Contact() {
                     )}
                     <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:gap-4">
                       {status === 'error' && (
-                        <MagneticButton onClick={() => openMailClient(composeMail(values))} className="w-full sm:w-auto">
-                          Dërgo me email <Mail size={15} />
+                        <MagneticButton onClick={() => openMailClient(composeMail(values, t))} className="w-full sm:w-auto">
+                          {c.status.sendByEmail} <Mail size={15} />
                         </MagneticButton>
                       )}
                       <MagneticButton
@@ -282,7 +285,7 @@ export default function Contact() {
                           setStatus('idle')
                         }}
                       >
-                        {status === 'error' ? 'Kthehu te formulari' : 'Dërgo një mesazh tjetër'}
+                        {status === 'error' ? c.status.backToForm : c.status.sendAnother}
                       </MagneticButton>
                     </div>
                   </motion.div>
@@ -297,33 +300,33 @@ export default function Contact() {
                     transition={{ duration: 0.4 }}
                     className="grid w-full grid-cols-1 gap-x-8 gap-y-2 sm:min-h-[540px] sm:grid-cols-2"
                   >
-                    <Field label="Emri dhe mbiemri *" error={errors.name}>
-                      <input className="field" value={values.name} onChange={update('name')} placeholder="p.sh. Arben Hoxha" autoComplete="name" />
+                    <Field label={c.form.name} error={errorFor('name')}>
+                      <input className="field" value={values.name} onChange={update('name')} placeholder={c.form.namePlaceholder} autoComplete="name" />
                     </Field>
-                    <Field label="Email *" error={errors.email}>
-                      <input className="field" type="email" inputMode="email" value={values.email} onChange={update('email')} placeholder="emri@kompania.al" autoComplete="email" />
+                    <Field label={c.form.email} error={errorFor('email')}>
+                      <input className="field" type="email" inputMode="email" value={values.email} onChange={update('email')} placeholder={c.form.emailPlaceholder} autoComplete="email" />
                     </Field>
-                    <Field label="Telefoni" error={errors.phone}>
+                    <Field label={c.form.phone} error={errorFor('phone')}>
                       <input
                         className="field"
                         type="tel"
                         inputMode="tel"
                         value={values.phone}
                         onChange={update('phone')}
-                        placeholder="+355 6X XXX XXXX"
+                        placeholder={c.form.phonePlaceholder}
                         autoComplete="tel"
                       />
                     </Field>
-                    <Field label="Shërbimi">
+                    <Field label={c.form.service}>
                       <span className="relative block">
                         <select
                           className="field cursor-pointer appearance-none truncate bg-graphite pr-8"
                           value={values.service}
                           onChange={update('service')}
                         >
-                          <option value="">Zgjidhni shërbimin</option>
+                          <option value="">{c.form.servicePlaceholder}</option>
                           {services.map((s) => (
-                            <option key={s.id} value={s.id}>{s.title}</option>
+                            <option key={s.id} value={s.id}>{t.services.items[s.id]?.title}</option>
                           ))}
                         </select>
                         <ChevronDown
@@ -333,26 +336,24 @@ export default function Contact() {
                         />
                       </span>
                     </Field>
-                    <Field label="Mesazhi *" error={errors.message} className="sm:col-span-2">
+                    <Field label={c.form.message} error={errorFor('message')} className="sm:col-span-2">
                       <textarea
                         className="field h-32 resize-none py-3"
                         value={values.message}
                         onChange={update('message')}
                         maxLength={MESSAGE_MAX}
-                        placeholder="Na tregoni shkurt për projektin tuaj: lloji, vendndodhja, afati…"
+                        placeholder={c.form.messagePlaceholder}
                       />
                     </Field>
 
                     <div className="flex flex-col items-stretch justify-between gap-5 pt-4 sm:col-span-2 sm:flex-row sm:items-center sm:gap-6">
-                      <p className="text-xs leading-relaxed text-mist sm:max-w-xs">
-                        Duke dërguar formularin, pranoni që t'ju kontaktojmë në lidhje me kërkesën tuaj.
-                      </p>
+                      <p className="text-xs leading-relaxed text-mist sm:max-w-xs">{c.form.consent}</p>
                       <MagneticButton
                         type="submit"
                         disabled={status === 'sending'}
                         className="w-full shrink-0 disabled:opacity-70 sm:w-auto sm:min-w-[220px]"
                       >
-                        {status === 'sending' ? 'Duke dërguar…' : (<>Dërgo mesazhin <ArrowRight size={16} /></>)}
+                        {status === 'sending' ? c.form.sending : (<>{c.form.submit} <ArrowRight size={16} /></>)}
                       </MagneticButton>
                     </div>
                   </motion.form>

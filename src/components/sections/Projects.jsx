@@ -9,16 +9,19 @@ import ProjectModal from '../projects/ProjectModal'
 import { categories, projects } from '../../data/projects'
 import { scrollToTarget } from '../../hooks/useLenis'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
+import { useLanguage } from '../../context/LanguageContext'
+import { localize } from '../../locales'
 
 const ease = [0.22, 1, 0.36, 1]
 
 /* Shigjetë navigimi — e njëjtë me atë të seksionit Shërbimet */
 function NavArrow({ dir, disabled, onClick }) {
+  const { t } = useLanguage()
   const Icon = dir === 'prev' ? ArrowLeft : ArrowRight
   return (
     <motion.button
       type="button"
-      aria-label={dir === 'prev' ? 'Projekti i mëparshëm' : 'Projekti tjetër'}
+      aria-label={dir === 'prev' ? t.projects.prev : t.projects.next}
       onClick={onClick}
       disabled={disabled}
       whileTap={{ scale: 0.92 }}
@@ -102,16 +105,22 @@ function MobileCarousel({ items, onOpen }) {
 }
 
 export default function Projects() {
+  const { t } = useLanguage()
   const [filter, setFilter] = useState('all')
-  const [active, setActive] = useState(null)
-  const closeModal = useCallback(() => setActive(null), [])
+  // Ruhet id-ja (jo objekti), që modali i hapur të ndjekë gjuhën aktive
+  const [activeId, setActiveId] = useState(null)
+  const closeModal = useCallback(() => setActiveId(null), [])
+  const openProject = useCallback((p) => setActiveId(p.id), [])
   // Tablet + desktop: carousel horizontal. Mobile: rrjet vertikal.
   const isCarousel = useMediaQuery('(min-width: 768px)')
 
+  // Projektet me nëntitullin dhe përshkrimin në gjuhën aktive
+  const items = useMemo(() => localize(projects, t.projects.items), [t])
   const visible = useMemo(
-    () => (filter === 'all' ? projects : projects.filter((p) => p.category === filter)),
-    [filter],
+    () => (filter === 'all' ? items : items.filter((p) => p.category === filter)),
+    [filter, items],
   )
+  const activeProject = items.find((p) => p.id === activeId) ?? null
   const selectFilter = (id) => setFilter(id)
 
   return (
@@ -120,7 +129,7 @@ export default function Projects() {
       <section id="projektet" className="section-pad relative overflow-hidden">
         <div className="container-site">
           <div className="flex flex-col justify-between gap-8 md:gap-12 lg:flex-row lg:items-end">
-            <SectionTitle index="03" label="Portofoli" title="Projekte që flasin vetë" />
+            <SectionTitle index="03" label={t.projects.label} title={t.projects.title} />
 
             {/* Mobile: dropdown */}
             <MobileFilter value={filter} onChange={selectFilter} />
@@ -129,20 +138,18 @@ export default function Projects() {
             <LayoutGroup id="filters">
               <div
                 role="tablist"
-                aria-label="Filtro projektet"
+                aria-label={t.projects.filterLabel}
                 className="hidden md:flex md:flex-wrap md:gap-3"
               >
-                {categories.map((c) => {
-                  const isActive = filter === c.id
-                  const count =
-                    c.id === 'all' ? projects.length : projects.filter((p) => p.category === c.id).length
+                {categories.map((id) => {
+                  const isActive = filter === id
                   return (
                     <motion.button
-                      key={c.id}
+                      key={id}
                       type="button"
                       role="tab"
                       aria-selected={isActive}
-                      onClick={() => selectFilter(c.id)}
+                      onClick={() => selectFilter(id)}
                       whileTap={{ scale: 0.96 }}
                       className={`relative h-11 min-w-0 rounded-full border px-3 text-[11px] font-medium uppercase tracking-[0.12em] transition-colors duration-500 ease-silk sm:px-6 sm:text-[12px] sm:tracking-[0.16em] ${
                         isActive
@@ -158,9 +165,9 @@ export default function Projects() {
                         />
                       )}
                       <span className="relative flex items-center justify-center gap-2">
-                        <span className="truncate">{c.label}</span>
+                        <span className="truncate">{t.projects.categories[id]}</span>
                         <span className={`text-[10px] tabular-nums ${isActive ? 'text-ink/60' : 'text-mist/60'}`}>
-                          {String(count).padStart(2, '0')}
+                          {String(countFor(id)).padStart(2, '0')}
                         </span>
                       </span>
                     </motion.button>
@@ -181,10 +188,10 @@ export default function Projects() {
               viewport={{ once: true, margin: '-80px' }}
               transition={{ duration: 1.3, ease }}
             >
-              <ProjectCarousel items={visible} resetKey={filter} onOpen={setActive} />
+              <ProjectCarousel items={visible} resetKey={filter} onOpen={openProject} />
             </motion.div>
           ) : (
-            <MobileCarousel key={filter} items={visible} onOpen={setActive} />
+            <MobileCarousel key={filter} items={visible} onOpen={openProject} />
           )}
 
           <div className="mt-12 flex justify-center md:mt-20">
@@ -197,13 +204,13 @@ export default function Projects() {
               }}
               className="w-full sm:w-auto"
             >
-              Diskutoni projektin tuaj <ArrowUpRight size={16} />
+              {t.projects.cta} <ArrowUpRight size={16} />
             </MagneticButton>
           </div>
         </div>
       </section>
 
-      <ProjectModal project={active} onClose={closeModal} />
+      <ProjectModal project={activeProject} onClose={closeModal} />
     </>
   )
 }
@@ -212,9 +219,10 @@ const countFor = (id) => (id === 'all' ? projects.length : projects.filter((p) =
 
 /* Dropdown i filtrave — vetëm në mobile (fshihet nga md: e lart) */
 function MobileFilter({ value, onChange }) {
+  const { t } = useLanguage()
   const [open, setOpen] = useState(false)
   const rootRef = useRef(null)
-  const current = categories.find((c) => c.id === value) ?? categories[0]
+  const current = categories.includes(value) ? value : categories[0]
 
   // Mbyll me klik jashtë ose me Escape
   useEffect(() => {
@@ -237,7 +245,7 @@ function MobileFilter({ value, onChange }) {
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label="Filtro projektet"
+        aria-label={t.projects.filterLabel}
         onClick={() => setOpen((v) => !v)}
         whileTap={{ scale: 0.96 }}
         className={`flex h-14 w-full items-center justify-between border bg-[#1A1D21] px-5 text-[12px] font-medium uppercase tracking-[0.18em] text-gold transition-colors duration-500 ease-silk ${
@@ -245,11 +253,11 @@ function MobileFilter({ value, onChange }) {
         }`}
       >
         <span className="flex items-center gap-3">
-          <span className="text-[10px] tracking-[0.24em] text-mist/70">Filtro</span>
+          <span className="text-[10px] tracking-[0.24em] text-mist/70">{t.projects.filter}</span>
           <span className="h-3 w-px bg-gold/30" />
-          <span>{current.label}</span>
+          <span>{t.projects.categories[current]}</span>
           <span className="text-[10px] tabular-nums text-gold/60">
-            {String(countFor(current.id)).padStart(2, '0')}
+            {String(countFor(current)).padStart(2, '0')}
           </span>
         </span>
         <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ type: 'spring', stiffness: 300, damping: 26 }}>
@@ -261,7 +269,7 @@ function MobileFilter({ value, onChange }) {
         {open && (
           <motion.ul
             role="listbox"
-            aria-label="Kategoritë"
+            aria-label={t.projects.categoriesLabel}
             initial={{ opacity: 0, y: -8, clipPath: 'inset(0 0 100% 0)' }}
             animate={{ opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)' }}
             exit={{ opacity: 0, y: -8, clipPath: 'inset(0 0 100% 0)' }}
@@ -269,11 +277,11 @@ function MobileFilter({ value, onChange }) {
             style={{ willChange: 'transform, clip-path' }}
             className="absolute left-0 right-0 top-full mt-2 border border-gold/40 bg-[#1A1D21] py-2 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)]"
           >
-            {categories.map((c, i) => {
-              const isActive = c.id === value
+            {categories.map((id, i) => {
+              const isActive = id === value
               return (
                 <motion.li
-                  key={c.id}
+                  key={id}
                   role="option"
                   aria-selected={isActive}
                   initial={{ opacity: 0, x: -10 }}
@@ -283,7 +291,7 @@ function MobileFilter({ value, onChange }) {
                   <button
                     type="button"
                     onClick={() => {
-                      onChange(c.id)
+                      onChange(id)
                       setOpen(false)
                     }}
                     className={`flex h-12 w-full items-center justify-between px-5 text-[12px] font-medium uppercase tracking-[0.18em] transition-colors duration-300 ${
@@ -292,10 +300,10 @@ function MobileFilter({ value, onChange }) {
                   >
                     <span className="flex items-center gap-3">
                       <span className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-gold' : 'bg-gold/20'}`} />
-                      {c.label}
+                      {t.projects.categories[id]}
                     </span>
                     <span className="text-[10px] tabular-nums text-gold/50">
-                      {String(countFor(c.id)).padStart(2, '0')}
+                      {String(countFor(id)).padStart(2, '0')}
                     </span>
                   </button>
                 </motion.li>
